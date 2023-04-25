@@ -6,10 +6,20 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.uniandes.miso.vinyls.ui.screens.MainScreen
+import com.uniandes.miso.vinyls.ui.screens.OptionsScreen
 import com.uniandes.miso.vinyls.ui.theme.VinylsTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    MainView()
                 }
             }
         }
@@ -30,14 +40,56 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+fun MainView() {
+    StatusBarColorEffect()
+    //Necesitamos configurar Navigation Compose para poder utilizarlo
+    //NavHost nos va a permitir realizar la navegacion
+    //Para que no se nos duplique tenemos una funcion rememmber
+    val navController = rememberNavController()
+    //NavHost es el componente de NavigationCompose que va a definir el grafo
+    //de navegación, en ese NavHost le vamos a decir que NavAppController tiene
+    //que usar y tambien la pantalla de origen y a las pantallas que se
+    //puede navegar, este NavHost es a la vez un composable que va a ser
+    //el encargado de pintar el composable correspondiente en funcion del
+    //estado en el que nos encontremos
+    NavHost(navController = navController, startDestination = "main") {
+        //definimos las pantallas/composables. definimos composable y dentro indicamos cual
+        //es el composable que queremos que nos pinte cuando estemos en esa ruta
+        composable("main") {
+            MainScreen(navController)
+        }
+        composable(
+            route = "options/{userId}",
+            arguments = listOf(
+                navArgument("userId"){
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("userId")
+            requireNotNull(id)
+            OptionsScreen(id)
+        }
+    }
+}
+
+
+@Composable
+fun StatusBarColorEffect(
+    color: Color = MaterialTheme.colors.primaryVariant,
+    systemUiController: SystemUiController = rememberSystemUiController()
+) {
+    // SideEffect: cada vez que haya una recomposicion de nuestro componente se actualizaran  las barras de ui
+    SideEffect {
+        systemUiController.setSystemBarsColor(color = color)
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     VinylsTheme {
-        Greeting("Android")
+        MainView()
     }
 }
