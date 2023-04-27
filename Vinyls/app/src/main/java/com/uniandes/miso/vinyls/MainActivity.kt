@@ -18,10 +18,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.uniandes.miso.vinyls.ui.screens.MainScreen
-import com.uniandes.miso.vinyls.ui.screens.OptionsScreen
+import com.uniandes.miso.vinyls.ui.screens.*
 import com.uniandes.miso.vinyls.ui.theme.VinylsTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,15 +62,26 @@ fun MainView() {
         composable(
             route = "options/{userId}",
             arguments = listOf(
-                navArgument("userId"){
+                navArgument("userId") {
                     type = NavType.StringType
                 }
             )
-        ) {
-            navBackStackEntry ->
+        ) { navBackStackEntry ->
             val id = navBackStackEntry.arguments?.getString("userId")
             requireNotNull(id)
-            OptionsScreen(id)
+            OptionsScreen(navController, id)
+        }
+
+        composable("listado/albumes") {
+            AlbumsScreen(navController = navController)
+        }
+
+        composable("listado/artistas") {
+            ArtistsScreen(navController = navController)
+        }
+
+        composable("listado/coleccionistas") {
+            CollectorsScreen(navController = navController)
         }
     }
 }

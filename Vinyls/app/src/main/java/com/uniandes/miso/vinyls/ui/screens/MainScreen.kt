@@ -38,8 +38,8 @@ fun MainScreen(navController: NavHostController) {
             TopAppBar(
                 title = { Text(stringResource(id = R.string.app_name)) })
             Thumb()
-            ButtonWithRectangleShape("Coleccionista", User.COLECCCIONISTA, navController)
-            ButtonWithRectangleShape("Invitado", User.INVITADO, navController)
+            ButtonWithRectangleShape("Coleccionista", User.COLECCCIONISTA, navController, false)
+            ButtonWithRectangleShape("Invitado", User.INVITADO, navController, false)
         }
     }
 }
@@ -61,10 +61,20 @@ fun Thumb() {
 }
 
 @Composable
-fun ButtonWithRectangleShape(name: String, userId: User, navController: NavHostController) {
+fun ButtonWithRectangleShape(
+    name: String,
+    userId: User,
+    navController: NavHostController,
+    listado: Boolean
+) {
     Button(
         onClick = {
-            navController.navigate("options/${userId}")
+            if (listado) {
+                navController.navigate("listado/${name.lowercase()}")
+            } else {
+                navController.navigate("options/${userId}")
+            }
+
         },
         shape = RectangleShape,
         modifier = Modifier.width(width = 300.dp),

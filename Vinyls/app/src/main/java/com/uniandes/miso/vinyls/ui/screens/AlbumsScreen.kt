@@ -5,14 +5,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
-import com.uniandes.miso.vinyls.utils.User
 
 @Composable
-fun OptionsScreen(navController: NavHostController, id: String) {
+fun AlbumsScreen(navController: NavHostController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colors.background
@@ -22,14 +23,11 @@ fun OptionsScreen(navController: NavHostController, id: String) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
-            if (User.valueOf(id) == User.COLECCCIONISTA) {
-                ButtonWithRectangleShape("Albumes", User.valueOf(id), navController, true)
-                ButtonWithRectangleShape("Artistas", User.valueOf(id), navController, true)
-            } else {
-                ButtonWithRectangleShape("Albumes", User.valueOf(id), navController, true)
-                ButtonWithRectangleShape("Artistas", User.valueOf(id), navController, true)
-                ButtonWithRectangleShape("Coleccionistas", User.valueOf(id), navController, true)
-            }
+            Text(
+                text = "Albumes",
+                style = MaterialTheme.typography.h4,
+                color = Color.Black
+            )
         }
     }
 }
