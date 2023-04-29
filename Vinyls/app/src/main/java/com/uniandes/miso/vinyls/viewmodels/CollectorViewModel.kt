@@ -11,8 +11,6 @@ import javax.inject.Inject
 class CollectorViewModel @Inject constructor(private val collectorsRepository: CollectorsRepository) :
     ViewModel() {
 
-    // private val collectorsRepository = CollectorsRepository(application)
-
     private val _collectors = MutableLiveData<List<Collector>>()
 
     val collectors: LiveData<List<Collector>>
