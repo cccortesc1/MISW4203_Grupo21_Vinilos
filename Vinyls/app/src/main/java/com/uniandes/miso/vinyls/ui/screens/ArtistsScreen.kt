@@ -46,14 +46,12 @@ fun ArtistsScreen(
         Column(
             modifier = Modifier
                 .height(210.dp)
-                .background(MaterialTheme.colors.onBackground)
                 .fillMaxWidth()
         ) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .height(160.dp)
-                    .background(MaterialTheme.colors.onBackground)
                     .fillMaxWidth()
                     .padding(4.dp)
             ) {
@@ -67,12 +65,10 @@ fun ArtistsScreen(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .background(MaterialTheme.colors.onBackground)
                     .padding(4.dp)
             ) {
                 Text(
                     text = artistItem.name,
-                    color = MaterialTheme.colors.primaryVariant,
                     textAlign = TextAlign.Center
                 )
             }
@@ -120,41 +116,3 @@ fun ArtistsScreen(
         )
     }
 }
-
-    /*Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Text(
-                text = "Artistas",
-                style = MaterialTheme.typography.h4,
-                color = Color.Black
-            )
-
-
-
-                items(artistsItems) { artist ->
-                    val painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(LocalContext.current).data(data = artist.image)
-                            .apply(block = fun ImageRequest.Builder.() {
-                                size(200, 200)
-                            }).build()
-                    )
-                    Card(
-                        elevation = 4.dp
-                        //shape = RoundedCornerShape(20.dp)
-                    ) {
-
-                    }
-                }
-            }
-        }
-    }
-}*/
-
-
