@@ -69,7 +69,7 @@ class NetworkServiceAdapter constructor(context: Context) {
     ) {
         requestQueue.add(
             getRequest("musicians",
-                Response.Listener<String> { response ->
+                { response ->
                     Log.d("tagb", response)
                     val resp = JSONArray(response)
                     val list = mutableListOf<Artist>()
@@ -88,7 +88,7 @@ class NetworkServiceAdapter constructor(context: Context) {
                     }
                     onComplete(list)
                 },
-                Response.ErrorListener {
+                {
                     onError(it)
                     Log.d("", it.message.toString())
                 })

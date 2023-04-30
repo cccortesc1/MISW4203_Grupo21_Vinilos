@@ -30,7 +30,6 @@ fun ArtistsScreen(
     artistViewModel: ArtistViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
-    //val artistsItems: List<Artist>? by artistViewModel.artists.observeAsState()
     val artists = artistViewModel.artists.observeAsState()
 
     @Composable
