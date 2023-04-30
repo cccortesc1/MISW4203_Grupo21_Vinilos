@@ -21,7 +21,7 @@ fun CollectorsScreen(
     navController: NavHostController
 ) {
 
-    var list = mutableListOf<Collector>()
+    val list = mutableListOf<Collector>()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
