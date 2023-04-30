@@ -9,9 +9,8 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
-import com.uniandes.miso.vinyls.R
 
-enum class User (val idUser: String){
+enum class User(val idUser: String) {
     COLECCCIONISTA("coleccionista"),
     INVITADO("invitado")
 }
