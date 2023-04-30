@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Vinyls</string>
     <string name="collectors">Coleccionistas</string>
+    <string name="artists">Artistas</string>
 </resources>
