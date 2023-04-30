@@ -9,6 +9,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.uniandes.miso.vinyls.models.Artist
 import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.models.Collector
 import org.json.JSONArray
@@ -17,7 +18,7 @@ import org.json.JSONObject
 class NetworkServiceAdapter constructor(context: Context) {
     companion object {
         const val BASE_URL = "https://miso-mobile-vynils-backend.herokuapp.com/"
-        var instance: NetworkServiceAdapter? = null
+        private var instance: NetworkServiceAdapter? = null
         fun getInstance(context: Context) =
             instance ?: synchronized(this) {
                 instance ?: NetworkServiceAdapter(context).also {
@@ -50,6 +51,38 @@ class NetworkServiceAdapter constructor(context: Context) {
                                 name = item.getString("name"),
                                 telephone = item.getString("telephone"),
                                 email = item.getString("email")
+                            )
+                        )
+                    }
+                    onComplete(list)
+                },
+                {
+                    onError(it)
+                    Log.d("", it.message.toString())
+                })
+        )
+    }
+
+    fun getArtists(
+        onComplete: (resp: List<Artist>) -> Unit,
+        onError: (error: VolleyError) -> Unit
+    ) {
+        requestQueue.add(
+            getRequest("musicians",
+                { response ->
+                    Log.d("tagb", response)
+                    val resp = JSONArray(response)
+                    val list = mutableListOf<Artist>()
+                    for (i in 0 until resp.length()) {
+                        val item = resp.getJSONObject(i)
+                        list.add(
+                            i,
+                            Artist(
+                                artistId = item.getInt("id"),
+                                name = item.getString("name"),
+                                image = item.getString("image"),
+                                description = item.getString("description"),
+                                birthDate = item.getString("birthDate")
                             )
                         )
                     }
