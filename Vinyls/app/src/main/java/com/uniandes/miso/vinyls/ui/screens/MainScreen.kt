@@ -17,29 +17,35 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.uniandes.miso.vinyls.R
+import com.uniandes.miso.vinyls.utils.MainAppBar
 import com.uniandes.miso.vinyls.utils.User
 
 @Composable
 fun MainScreen(navController: NavHostController) {
     // A surface container using the 'background' color from the theme
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colors.background
-    ) {
 
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(
-                space = 75.dp,
-                alignment = Alignment.Top
-            ),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    Scaffold(
+        topBar = {
             TopAppBar(
-                title = { Text(stringResource(id = R.string.app_name)) })
-            Thumb()
-            ButtonWithRectangleShape("Coleccionista", User.COLECCCIONISTA, navController, false)
-            ButtonWithRectangleShape("Invitado", User.INVITADO, navController, false)
+                title = { Text(stringResource(R.string.app_name)) })
+        }
+    ) { padding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            color = MaterialTheme.colors.background
+        ) {
+
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Thumb()
+                ButtonWithRectangleShape("Coleccionista", User.COLECCCIONISTA, navController, false)
+                ButtonWithRectangleShape("Invitado", User.INVITADO, navController, false)
+            }
         }
     }
 }
