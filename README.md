@@ -5,5 +5,5 @@
 * Clonar el código del repositorio
 * Abrir Android Studio.
 * Seleccionar en el menú "File" la opción "Open" y seleccionar la carpeta "Vinyls".
-* Hacer build con Gradle. 
+* Seleccionar la opción "Make Project". (Ctrl + F9 en Windows) 
 * Correr la aplicación con "Run".
