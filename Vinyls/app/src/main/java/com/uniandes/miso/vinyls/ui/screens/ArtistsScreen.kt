@@ -1,6 +1,8 @@
 package com.uniandes.miso.vinyls.ui.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,7 +29,8 @@ import com.uniandes.miso.vinyls.viewmodels.ArtistViewModel
 @Composable
 fun ArtistsScreen(
     artistViewModel: ArtistViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    context: Context = LocalContext.current
 ) {
     val artists = artistViewModel.artists.observeAsState()
 
@@ -79,6 +82,10 @@ fun ArtistsScreen(
     ) {
         Card(
             modifier = Modifier
+                .clickable {
+                    navController.navigate("listado/artistas/detailArtist")
+                    //Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show()
+                }
                 .padding(8.dp)
                 .height(210.dp),
             elevation = 10.dp

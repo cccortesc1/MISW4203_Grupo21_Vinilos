@@ -80,6 +80,10 @@ fun MainView() {
             ArtistsScreen(navController = navController)
         }
 
+        composable("listado/artistas/detailArtist") {
+            DetailArtistsScreen(navController = navController)
+        }
+
         composable("listado/coleccionistas") {
             CollectorsScreen(navController = navController)
         }
