@@ -14,6 +14,9 @@ import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.models.Collector
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class NetworkServiceAdapter constructor(context: Context) {
     companion object {
@@ -63,14 +66,11 @@ class NetworkServiceAdapter constructor(context: Context) {
         )
     }
 
-    fun getArtists(
-        onComplete: (resp: List<Artist>) -> Unit,
-        onError: (error: VolleyError) -> Unit
-    ) {
+    suspend fun getArtists() = suspendCoroutine<List<Artist>> { cont->
         requestQueue.add(
             getRequest("musicians",
                 { response ->
-                    Log.d("tagb", response)
+                    //Log.d("tagb", response)
                     val resp = JSONArray(response)
                     val list = mutableListOf<Artist>()
                     for (i in 0 until resp.length()) {
@@ -86,11 +86,10 @@ class NetworkServiceAdapter constructor(context: Context) {
                             )
                         )
                     }
-                    onComplete(list)
+                    cont.resume(list)
                 },
                 {
-                    onError(it)
-                    Log.d("", it.message.toString())
+                    cont.resumeWithException(it)
                 })
         )
     }
@@ -153,7 +152,7 @@ class NetworkServiceAdapter constructor(context: Context) {
                                 releaseDate = item.getString("releaseDate"),
                                 description = item.getString("description"),
                                 genre = item.getString("genre"),
-                                recordLabel = item.getString("recordLabel"),
+                                recordLabel = item.getString("recordLabel")
                             )
                         )
                     }

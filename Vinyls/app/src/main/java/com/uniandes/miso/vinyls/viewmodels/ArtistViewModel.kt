@@ -1,10 +1,12 @@
 package com.uniandes.miso.vinyls.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.uniandes.miso.vinyls.models.Artist
 import com.uniandes.miso.vinyls.repositories.ArtistsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,14 +32,20 @@ class ArtistViewModel @Inject constructor(private val artistsRepository: Artists
     }
 
     private fun refreshDataFromNetwork() {
-        artistsRepository.refreshData({
-            _artists.postValue(it)
-            _eventNetworkError.value = false
-            _isNetworkErrorShown.value = false
-        }, {
-            Log.d("Error", it.toString())
+        try {
+            viewModelScope.launch(Dispatchers.Default) {
+                withContext(Dispatchers.IO) {
+                    var data = artistsRepository.refreshData()
+                    _artists.postValue(data)
+                }
+                _eventNetworkError.value = false
+                _isNetworkErrorShown.value = false
+            }
+        }
+        catch (e:Exception){
+            //Log.d("Error", e.toString())
             _eventNetworkError.value = true
-        })
+        }
     }
 
     fun onNetworkErrorShown() {
