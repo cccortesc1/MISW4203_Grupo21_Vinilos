@@ -35,21 +35,19 @@ class CollectorViewModel @Inject constructor(private val collectorsRepository: C
 
 
     private fun refreshDataFromNetwork() {
-
-        try {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            _eventNetworkError.value = false
+            _isNetworkErrorShown.value = false
+            try {
                 withContext(Dispatchers.IO) {
                     val data = collectorsRepository.refreshData()
                     _collectors.postValue(data)
                 }
-                _eventNetworkError.value = false
-                _isNetworkErrorShown.value = false
+            } catch (e: Exception) {
+                Log.d("Error", e.toString())
+                _eventNetworkError.value = true
             }
-        } catch (e: Exception) {
-            Log.d("Error", e.toString())
-            _eventNetworkError.value = true
         }
-
     }
 
     fun onNetworkErrorShown() {
