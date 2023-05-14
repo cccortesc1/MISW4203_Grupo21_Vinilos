@@ -14,6 +14,9 @@ import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.models.Collector
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class NetworkServiceAdapter constructor(context: Context) {
     companion object {
@@ -32,10 +35,7 @@ class NetworkServiceAdapter constructor(context: Context) {
         Volley.newRequestQueue(context.applicationContext)
     }
 
-    fun getCollectors(
-        onComplete: (resp: List<Collector>) -> Unit,
-        onError: (error: VolleyError) -> Unit
-    ) {
+    suspend fun getCollectors() = suspendCoroutine<List<Collector>> { cont ->
         requestQueue.add(
             getRequest("collectors",
                 { response ->
@@ -54,11 +54,11 @@ class NetworkServiceAdapter constructor(context: Context) {
                             )
                         )
                     }
-                    onComplete(list)
+
+                    cont.resume(list)
                 },
                 {
-                    onError(it)
-                    Log.d("", it.message.toString())
+                    cont.resumeWithException(it)
                 })
         )
     }
@@ -133,8 +133,9 @@ class NetworkServiceAdapter constructor(context: Context) {
         )
     }
 
-    fun getAlbums(onComplete: (resp: List<Album>) -> Unit,
-                  onError: (error: VolleyError) -> Unit
+    fun getAlbums(
+        onComplete: (resp: List<Album>) -> Unit,
+        onError: (error: VolleyError) -> Unit
     ) {
         requestQueue.add(
             getRequest("albums",
@@ -153,7 +154,7 @@ class NetworkServiceAdapter constructor(context: Context) {
                                 releaseDate = item.getString("releaseDate"),
                                 description = item.getString("description"),
                                 genre = item.getString("genre"),
-                                recordLabel = item.getString("recordLabel"),
+                                recordLabel = item.getString("recordLabel")
                             )
                         )
                     }
