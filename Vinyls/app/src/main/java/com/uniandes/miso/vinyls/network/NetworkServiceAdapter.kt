@@ -9,14 +9,16 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.uniandes.miso.vinyls.models.Artist
+import com.google.gson.Gson
 import com.uniandes.miso.vinyls.models.Album
+import com.uniandes.miso.vinyls.models.Artist
 import com.uniandes.miso.vinyls.models.Collector
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+
 
 class NetworkServiceAdapter constructor(context: Context) {
     companion object {
@@ -44,15 +46,9 @@ class NetworkServiceAdapter constructor(context: Context) {
                     val list = mutableListOf<Collector>()
                     for (i in 0 until resp.length()) {
                         val item = resp.getJSONObject(i)
-                        list.add(
-                            i,
-                            Collector(
-                                collectorId = item.getInt("id"),
-                                name = item.getString("name"),
-                                telephone = item.getString("telephone"),
-                                email = item.getString("email")
-                            )
-                        )
+                        val gson = Gson()
+                        val collector = gson.fromJson(item.toString(), Collector::class.java)
+                        list.add(collector)
                     }
 
                     cont.resume(list)
@@ -75,6 +71,7 @@ class NetworkServiceAdapter constructor(context: Context) {
                     val list = mutableListOf<Artist>()
                     for (i in 0 until resp.length()) {
                         val item = resp.getJSONObject(i)
+
                         list.add(
                             i,
                             Artist(
