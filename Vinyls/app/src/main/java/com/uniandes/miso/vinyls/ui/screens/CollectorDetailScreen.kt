@@ -3,10 +3,15 @@ package com.uniandes.miso.vinyls.ui.screens
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Phone
@@ -24,6 +29,7 @@ import coil.request.ImageRequest
 import com.google.gson.Gson
 import com.uniandes.miso.vinyls.R
 import com.uniandes.miso.vinyls.models.Collector
+import com.uniandes.miso.vinyls.models.Comment
 import com.uniandes.miso.vinyls.models.FavoritePerformer
 import com.uniandes.miso.vinyls.utils.MainAppBar
 
@@ -45,8 +51,6 @@ fun CollectorDetailScreen(
 @Composable
 fun CollectorDetail(modifier: Modifier, collectorDetail: Collector) {
     Log.d("DebugRecomposition", Gson().toJson(collectorDetail))
-
-
     Card(
         modifier = Modifier
             .padding(16.dp)
@@ -107,8 +111,58 @@ fun CollectorDetail(modifier: Modifier, collectorDetail: Collector) {
 
             FavoritePerformers(collectorDetail = collectorDetail)
 
+            Text(
+                text = "Comentarios",
+                color = MaterialTheme.colors.primary,
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(vertical = 8.dp)
+            )
+
+            Comments(collectorDetail.comments)
+
         }
     }
+}
+
+@Composable
+fun Comments(comments: List<Comment>) {
+    LazyColumn(
+    ) {
+        items(comments, itemContent = {
+            CommentItem(comment = it)
+        })
+    }
+}
+
+@Composable
+fun CommentItem(comment: Comment) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        elevation = 10.dp,
+        backgroundColor = Color.White,
+        shape = RoundedCornerShape(corner = CornerSize(4.dp))
+    ) {
+        Row {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+                    .padding(8.dp)
+            ) {
+                Text(text = comment.description, style = typography.body1, color = Color.Gray)
+                Text(
+                    text = "rating: ${comment.rating}",
+                    style = typography.caption,
+                    color = Color.Gray
+                )
+            }
+        }
+    }
+
 }
 
 @Composable
@@ -174,7 +228,6 @@ fun PerformerItem(performer: FavoritePerformer) {
             )
         }
     }
-
 }
 
 
