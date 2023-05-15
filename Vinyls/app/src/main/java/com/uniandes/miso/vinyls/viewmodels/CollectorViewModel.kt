@@ -5,6 +5,9 @@ import androidx.lifecycle.*
 import com.uniandes.miso.vinyls.models.Collector
 import com.uniandes.miso.vinyls.repositories.CollectorsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,15 +33,21 @@ class CollectorViewModel @Inject constructor(private val collectorsRepository: C
         refreshDataFromNetwork()
     }
 
+
     private fun refreshDataFromNetwork() {
-        collectorsRepository.refreshData({
-            _collectors.postValue(it)
+        viewModelScope.launch {
             _eventNetworkError.value = false
             _isNetworkErrorShown.value = false
-        }, {
-            Log.d("Error", it.toString())
-            _eventNetworkError.value = true
-        })
+            try {
+                withContext(Dispatchers.IO) {
+                    val data = collectorsRepository.refreshData()
+                    _collectors.postValue(data)
+                }
+            } catch (e: Exception) {
+                Log.d("Error", e.toString())
+                _eventNetworkError.value = true
+            }
+        }
     }
 
     fun onNetworkErrorShown() {

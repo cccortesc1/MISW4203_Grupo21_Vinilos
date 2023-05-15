@@ -1,5 +1,6 @@
 package com.uniandes.miso.vinyls.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,13 +31,18 @@ fun CollectorsScreen(
     ) { padding ->
         MediaList(
             modifier = Modifier.padding(padding),
-            collectorItems
+            collectorItems,
+            navController
         )
     }
 }
 
 @Composable
-fun MediaList(modifier: Modifier, collectorItems: State<List<Collector>?>) {
+fun MediaList(
+    modifier: Modifier,
+    collectorItems: State<List<Collector>?>,
+    navController: NavHostController
+) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(dimensionResource(R.dimen.cell_min_width)),
         contentPadding = PaddingValues(dimensionResource(R.dimen.padding_xsmall)),
@@ -45,7 +51,8 @@ fun MediaList(modifier: Modifier, collectorItems: State<List<Collector>?>) {
         collectorItems.value?.let { listCollector ->
             items(listCollector) {
                 MediaListItem(
-                    collectorItem = it
+                    collectorItem = it,
+                    navController
                 )
             }
         }
@@ -54,10 +61,14 @@ fun MediaList(modifier: Modifier, collectorItems: State<List<Collector>?>) {
 
 @Composable
 fun MediaListItem(
-    collectorItem: Collector
+    collectorItem: Collector,
+    navController: NavHostController
 ) {
     Card(
         modifier = Modifier
+            .clickable {
+                navController.navigate("listado/collector/${collectorItem}")
+            }
             .padding(8.dp)
             .height(150.dp),
         elevation = 10.dp
