@@ -1,6 +1,7 @@
 package com.uniandes.miso.vinyls.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -36,13 +37,18 @@ fun AlbumsScreen(
     ) { padding ->
         AlbumMediaList(
             modifier = Modifier.padding(padding),
-            albumItems
+            albumItems,
+            navController
         )
     }
 }
 
 @Composable
-fun AlbumMediaList(modifier: Modifier, albumItems: State<List<Album>?>) {
+fun AlbumMediaList(
+    modifier: Modifier,
+    albumItems: State<List<Album>?>,
+    navController: NavHostController
+) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(dimensionResource(R.dimen.cell_min_width)),
         contentPadding = PaddingValues(dimensionResource(R.dimen.padding_xsmall)),
@@ -51,7 +57,8 @@ fun AlbumMediaList(modifier: Modifier, albumItems: State<List<Album>?>) {
         albumItems.value?.let { listAlbum ->
             items(listAlbum) {
                 AlbumMediaListItem(
-                    albumItem = it
+                    albumItem = it,
+                    navController
                 )
             }
         }
@@ -60,10 +67,14 @@ fun AlbumMediaList(modifier: Modifier, albumItems: State<List<Album>?>) {
 
 @Composable
 fun AlbumMediaListItem(
-    albumItem: Album
+    albumItem: Album,
+    navController: NavHostController
 ) {
     Card(
         modifier = Modifier
+            .clickable {
+                navController.navigate("listado/albums/${albumItem}")
+            }
             .padding(8.dp)
             .height(150.dp),
         elevation = 10.dp

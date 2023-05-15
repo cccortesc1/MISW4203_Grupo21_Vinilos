@@ -38,7 +38,6 @@ class NetworkServiceAdapter constructor(context: Context) {
     }
 
     suspend fun getCollectors() = suspendCoroutine<List<Collector>> { cont ->
-
         requestQueue.add(
             getRequest("collectors",
                 { response ->
@@ -130,10 +129,7 @@ class NetworkServiceAdapter constructor(context: Context) {
         )
     }
 
-    fun getAlbums(
-        onComplete: (resp: List<Album>) -> Unit,
-        onError: (error: VolleyError) -> Unit
-    ) {
+    suspend fun getAlbums() = suspendCoroutine<List<Album>> { cont ->
         requestQueue.add(
             getRequest("albums",
                 { response ->
@@ -142,6 +138,14 @@ class NetworkServiceAdapter constructor(context: Context) {
                     val list = mutableListOf<Album>()
                     for (i in 0 until resp.length()) {
                         val item = resp.getJSONObject(i)
+                        val gson = Gson()
+                        val album = gson.fromJson(item.toString(), Album::class.java)
+                        list.add(album)
+                    }
+                    cont.resume(list)
+                },
+                {
+                    cont.resumeWithException(it)
                         list.add(
                             i,
                             Album(
