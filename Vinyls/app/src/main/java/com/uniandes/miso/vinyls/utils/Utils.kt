@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import com.google.gson.Gson
+import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.models.Collector
 
 enum class User(val idUser: String) {
@@ -32,6 +33,14 @@ fun MainAppBar(navController: NavHostController, titleResource: Int) {
         })
 }
 
+
+class AlbumArgType : JsonNavType<Album>() {
+    override fun fromJsonParse(value: String): Album =
+        Gson().fromJson(value, Album::class.java)
+
+    override fun Album.getJsonParse(): String = Gson().toJson(this)
+
+}
 
 class CollectorArgType : JsonNavType<Collector>() {
     override fun fromJsonParse(value: String): Collector =
