@@ -38,6 +38,7 @@ class NetworkServiceAdapter constructor(context: Context) {
     }
 
     suspend fun getCollectors() = suspendCoroutine<List<Collector>> { cont ->
+
         requestQueue.add(
             getRequest("collectors",
                 { response ->
@@ -71,7 +72,6 @@ class NetworkServiceAdapter constructor(context: Context) {
                     val list = mutableListOf<Artist>()
                     for (i in 0 until resp.length()) {
                         val item = resp.getJSONObject(i)
-
                         list.add(
                             i,
                             Artist(
