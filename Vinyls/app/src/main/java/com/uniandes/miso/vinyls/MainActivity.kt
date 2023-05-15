@@ -18,8 +18,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.gson.Gson
+import com.uniandes.miso.vinyls.models.Collector
 import com.uniandes.miso.vinyls.ui.screens.*
 import com.uniandes.miso.vinyls.ui.theme.VinylsTheme
+import com.uniandes.miso.vinyls.utils.CollectorArgType
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -82,6 +85,17 @@ fun MainView() {
 
         composable("listado/coleccionistas") {
             CollectorsScreen(navController = navController)
+        }
+
+        composable(
+            route="listado/collector/{collectorItem}",
+            arguments = listOf(navArgument("collectorItem"){
+                type = CollectorArgType()
+            })
+        ) { navBackStackEntry->
+            val collectorDetail = navBackStackEntry.arguments?.getString("collectorItem")?.let { Gson().fromJson(it, Collector::class.java) }
+            requireNotNull(collectorDetail)
+            CollectorDetailScreen(navController, collectorDetail)
         }
     }
 }
