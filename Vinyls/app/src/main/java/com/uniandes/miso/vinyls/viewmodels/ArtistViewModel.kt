@@ -33,9 +33,9 @@ class ArtistViewModel @Inject constructor(private val artistsRepository: Artists
 
     private fun refreshDataFromNetwork() {
         try {
-            viewModelScope.launch(Dispatchers.Default) {
+            viewModelScope.launch() {
                 withContext(Dispatchers.IO) {
-                    var data = artistsRepository.refreshData()
+                    val data = artistsRepository.refreshData()
                     _artists.postValue(data)
                 }
                 _eventNetworkError.value = false
@@ -43,7 +43,6 @@ class ArtistViewModel @Inject constructor(private val artistsRepository: Artists
             }
         }
         catch (e:Exception){
-            //Log.d("Error", e.toString())
             _eventNetworkError.value = true
         }
     }

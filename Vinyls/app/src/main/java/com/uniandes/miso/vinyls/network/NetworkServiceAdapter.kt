@@ -75,6 +75,24 @@ class NetworkServiceAdapter constructor(context: Context) {
                     val list = mutableListOf<Artist>()
                     for (i in 0 until resp.length()) {
                         val item = resp.getJSONObject(i)
+                        val detailAlbum = item.getJSONArray("albums")
+                        val albumList = mutableListOf<Album>();
+
+                        for (j in 0 until detailAlbum.length()) {
+                            val detailItem = detailAlbum.getJSONObject(j)
+                            albumList.add(
+                                Album(
+                                    albumId = detailItem.getInt("id"),
+                                    name = detailItem.getString("name"),
+                                    cover = detailItem.getString("cover"),
+                                    releaseDate = detailItem.getString("releaseDate"),
+                                    description = detailItem.getString("description"),
+                                    genre = detailItem.getString("genre"),
+                                    recordLabel = detailItem.getString("recordLabel")
+                                )
+                            )
+                        }
+
                         list.add(
                             i,
                             Artist(
@@ -82,7 +100,8 @@ class NetworkServiceAdapter constructor(context: Context) {
                                 name = item.getString("name"),
                                 image = item.getString("image"),
                                 description = item.getString("description"),
-                                birthDate = item.getString("birthDate")
+                                birthDate = item.getString("birthDate"),
+                                albums = albumList
                             )
                         )
                     }

@@ -1,6 +1,5 @@
 package com.uniandes.miso.vinyls.ui.screens
 
-import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -12,7 +11,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -27,25 +25,21 @@ import com.uniandes.miso.vinyls.R
 import com.uniandes.miso.vinyls.models.Artist
 import com.uniandes.miso.vinyls.utils.MainAppBar
 import com.uniandes.miso.vinyls.viewmodels.ArtistViewModel
-import kotlinx.coroutines.launch
 
 @Composable
-fun ArtistsScreen(
+ fun ArtistsScreen(
     artistViewModel: ArtistViewModel = hiltViewModel(),
     navController: NavHostController,
     context: Context = LocalContext.current
 ) {
-    //val coroutineScope = rememberCoroutineScope()
 
-    //coroutineScope.launch() {
     val artists = artistViewModel.artists.observeAsState()
-    //}
 
     @Composable
     fun ArtistItem(artistItem: Artist) {
 
         val painter = rememberAsyncImagePainter(
-            ImageRequest.Builder(LocalContext.current).data(data = artistItem.image)
+            ImageRequest.Builder(context).data(data = artistItem.image)
                 .apply(block = fun ImageRequest.Builder.() {
                     size(200, 200)
                 }).build()
@@ -65,7 +59,7 @@ fun ArtistsScreen(
             ) {
                 Image(
                     painter = painter,
-                    contentDescription = "Imagen del artista ${artistItem.name}",
+                    contentDescription = "Image of an artist ${artistItem.name}",
                     modifier = Modifier.size(160.dp),
                     contentScale = ContentScale.Crop
                 )

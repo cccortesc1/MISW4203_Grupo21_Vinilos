@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import com.uniandes.miso.vinyls.R
+import com.uniandes.miso.vinyls.models.Artist
 import com.uniandes.miso.vinyls.utils.MainAppBar
 
 @Composable
@@ -22,7 +23,7 @@ fun DetailArtistsScreen(
     context: Context = LocalContext.current
 ){
     Scaffold(
-        topBar = { MainAppBar(navController, R.string.collectors) }
+        topBar = { MainAppBar(navController, R.string.artists) }
     ) { padding ->
         Box(
             modifier = Modifier.fillMaxSize()
@@ -36,5 +37,4 @@ fun DetailArtistsScreen(
             )
         }
     }
-
 }
