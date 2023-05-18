@@ -7,6 +7,7 @@ buildscript {
             hilt_version = '1.0.0'
             dagger_version = '2.43.2'
             volley_version = '1.2.1'
+            gson_version = '2.10.1'
         }
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$dagger_version"
