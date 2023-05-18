@@ -63,40 +63,13 @@ class NetworkServiceAdapter constructor(context: Context) {
         requestQueue.add(
             getRequest("musicians",
                 { response ->
-                    //Log.d("tagb", response)
                     val resp = JSONArray(response)
                     val list = mutableListOf<Artist>()
                     for (i in 0 until resp.length()) {
                         val item = resp.getJSONObject(i)
-                        val detailAlbum = item.getJSONArray("albums")
-                        val albumList = mutableListOf<Album>();
-
-                        for (j in 0 until detailAlbum.length()) {
-                            val detailItem = detailAlbum.getJSONObject(j)
-                            albumList.add(
-                                Album(
-                                    albumId = detailItem.getInt("id"),
-                                    name = detailItem.getString("name"),
-                                    cover = detailItem.getString("cover"),
-                                    releaseDate = detailItem.getString("releaseDate"),
-                                    description = detailItem.getString("description"),
-                                    genre = detailItem.getString("genre"),
-                                    recordLabel = detailItem.getString("recordLabel")
-                                )
-                            )
-                        }
-
-                        list.add(
-                            i,
-                            Artist(
-                                artistId = item.getInt("id"),
-                                name = item.getString("name"),
-                                image = item.getString("image"),
-                                description = item.getString("description"),
-                                birthDate = item.getString("birthDate"),
-                                albums = albumList
-                            )
-                        )
+                        val gson = Gson()
+                        val artist = gson.fromJson(item.toString(), Artist::class.java)
+                        list.add(artist)
                     }
                     cont.resume(list)
                 },
@@ -153,18 +126,6 @@ class NetworkServiceAdapter constructor(context: Context) {
                     val list = mutableListOf<Album>()
                     for (i in 0 until resp.length()) {
                         val item = resp.getJSONObject(i)
-                        list.add(
-                            i,
-                            Album(
-                                albumId = item.getInt("id"),
-                                name = item.getString("name"),
-                                cover = item.getString("cover"),
-                                releaseDate = item.getString("releaseDate"),
-                                description = item.getString("description"),
-                                genre = item.getString("genre"),
-                                recordLabel = item.getString("recordLabel")
-                            )
-                        )
                         val gson = Gson()
                         val album = gson.fromJson(item.toString(), Album::class.java)
                         list.add(album)
