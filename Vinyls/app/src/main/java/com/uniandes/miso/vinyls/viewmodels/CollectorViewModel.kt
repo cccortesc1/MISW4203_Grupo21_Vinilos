@@ -33,7 +33,6 @@ class CollectorViewModel @Inject constructor(private val collectorsRepository: C
         refreshDataFromNetwork()
     }
 
-
     private fun refreshDataFromNetwork() {
         viewModelScope.launch {
             _eventNetworkError.value = false

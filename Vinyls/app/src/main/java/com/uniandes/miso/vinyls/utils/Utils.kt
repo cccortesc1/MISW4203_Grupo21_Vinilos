@@ -33,7 +33,6 @@ fun MainAppBar(navController: NavHostController, titleResource: Int) {
         })
 }
 
-
 class AlbumArgType : JsonNavType<Album>() {
     override fun fromJsonParse(value: String): Album =
         Gson().fromJson(value, Album::class.java)
@@ -49,7 +48,6 @@ class CollectorArgType : JsonNavType<Collector>() {
     override fun Collector.getJsonParse(): String = Gson().toJson(this)
 
 }
-
 
 abstract class JsonNavType<T> : NavType<T>(isNullableAllowed = false) {
     abstract fun fromJsonParse(value: String): T
