@@ -20,9 +20,13 @@ import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.Gson
 import com.uniandes.miso.vinyls.models.Artist
+import com.uniandes.miso.vinyls.models.Album
+import com.uniandes.miso.vinyls.models.Collector
 import com.uniandes.miso.vinyls.ui.screens.*
 import com.uniandes.miso.vinyls.ui.theme.VinylsTheme
 import com.uniandes.miso.vinyls.utils.ArtistArgType
+import com.uniandes.miso.vinyls.utils.AlbumArgType
+import com.uniandes.miso.vinyls.utils.CollectorArgType
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -96,6 +100,28 @@ fun MainView() {
 
         composable("listado/coleccionistas") {
             CollectorsScreen(navController = navController)
+        }
+
+        composable(
+            route="listado/albums/{albumItem}",
+            arguments = listOf(navArgument("albumItem"){
+                type = AlbumArgType()
+            })
+        ) { navBackStackEntry->
+            val albumDetail = navBackStackEntry.arguments?.getString("albumItem")?.let { Gson().fromJson(it, Album::class.java) }
+            requireNotNull(albumDetail)
+            AlbumDetailScreen(navController, albumDetail)
+        }
+
+        composable(
+            route="listado/collector/{collectorItem}",
+            arguments = listOf(navArgument("collectorItem"){
+                type = CollectorArgType()
+            })
+        ) { navBackStackEntry->
+            val collectorDetail = navBackStackEntry.arguments?.getString("collectorItem")?.let { Gson().fromJson(it, Collector::class.java) }
+            requireNotNull(collectorDetail)
+            CollectorDetailScreen(navController, collectorDetail)
         }
     }
 }

@@ -13,6 +13,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import com.google.gson.Gson
 import com.uniandes.miso.vinyls.models.Artist
+import com.uniandes.miso.vinyls.models.Album
+import com.uniandes.miso.vinyls.models.Collector
 
 enum class User(val idUser: String) {
     COLECCCIONISTA("coleccionista"),
@@ -40,6 +42,21 @@ class ArtistArgType : JsonNavType<Artist>() {
 
 }
 
+class AlbumArgType : JsonNavType<Album>() {
+    override fun fromJsonParse(value: String): Album =
+        Gson().fromJson(value, Album::class.java)
+
+    override fun Album.getJsonParse(): String = Gson().toJson(this)
+
+}
+
+class CollectorArgType : JsonNavType<Collector>() {
+    override fun fromJsonParse(value: String): Collector =
+        Gson().fromJson(value, Collector::class.java)
+
+    override fun Collector.getJsonParse(): String = Gson().toJson(this)
+
+}
 
 abstract class JsonNavType<T> : NavType<T>(isNullableAllowed = false) {
     abstract fun fromJsonParse(value: String): T

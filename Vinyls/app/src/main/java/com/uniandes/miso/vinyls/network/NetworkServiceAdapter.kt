@@ -9,14 +9,16 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.uniandes.miso.vinyls.models.Artist
+import com.google.gson.Gson
 import com.uniandes.miso.vinyls.models.Album
+import com.uniandes.miso.vinyls.models.Artist
 import com.uniandes.miso.vinyls.models.Collector
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+
 
 class NetworkServiceAdapter constructor(context: Context) {
     companion object {
@@ -35,10 +37,7 @@ class NetworkServiceAdapter constructor(context: Context) {
         Volley.newRequestQueue(context.applicationContext)
     }
 
-    fun getCollectors(
-        onComplete: (resp: List<Collector>) -> Unit,
-        onError: (error: VolleyError) -> Unit
-    ) {
+    suspend fun getCollectors() = suspendCoroutine<List<Collector>> { cont ->
         requestQueue.add(
             getRequest("collectors",
                 { response ->
@@ -47,21 +46,15 @@ class NetworkServiceAdapter constructor(context: Context) {
                     val list = mutableListOf<Collector>()
                     for (i in 0 until resp.length()) {
                         val item = resp.getJSONObject(i)
-                        list.add(
-                            i,
-                            Collector(
-                                collectorId = item.getInt("id"),
-                                name = item.getString("name"),
-                                telephone = item.getString("telephone"),
-                                email = item.getString("email")
-                            )
-                        )
+                        val gson = Gson()
+                        val collector = gson.fromJson(item.toString(), Collector::class.java)
+                        list.add(collector)
                     }
-                    onComplete(list)
+
+                    cont.resume(list)
                 },
                 {
-                    onError(it)
-                    Log.d("", it.message.toString())
+                    cont.resumeWithException(it)
                 })
         )
     }
@@ -151,9 +144,7 @@ class NetworkServiceAdapter constructor(context: Context) {
         )
     }
 
-    fun getAlbums(onComplete: (resp: List<Album>) -> Unit,
-                  onError: (error: VolleyError) -> Unit
-    ) {
+    suspend fun getAlbums() = suspendCoroutine<List<Album>> { cont ->
         requestQueue.add(
             getRequest("albums",
                 { response ->
@@ -174,12 +165,14 @@ class NetworkServiceAdapter constructor(context: Context) {
                                 recordLabel = item.getString("recordLabel")
                             )
                         )
+                        val gson = Gson()
+                        val album = gson.fromJson(item.toString(), Album::class.java)
+                        list.add(album)
                     }
-                    onComplete(list)
+                    cont.resume(list)
                 },
                 {
-                    onError(it)
-                    Log.d("", it.message.toString())
+                    cont.resumeWithException(it)
                 })
         )
     }

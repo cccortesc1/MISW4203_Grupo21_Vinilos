@@ -5,6 +5,9 @@ import androidx.lifecycle.*
 import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.repositories.AlbumsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,14 +34,19 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
     }
 
     private fun refreshDataFromNetwork() {
-        albumsRepository.refreshData({
-            _albums.postValue(it)
+        viewModelScope.launch {
             _eventNetworkError.value = false
             _isNetworkErrorShown.value = false
-        }, {
-            Log.d("Error", it.toString())
-            _eventNetworkError.value = true
-        })
+            try {
+                withContext(Dispatchers.IO) {
+                    val data = albumsRepository.refreshData()
+                    _albums.postValue(data)
+                }
+            } catch (e: Exception) {
+                Log.d("Error", e.toString())
+                _eventNetworkError.value = true
+            }
+        }
     }
 
     fun onNetworkErrorShown() {
