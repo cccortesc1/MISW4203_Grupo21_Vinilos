@@ -27,8 +27,9 @@ import com.google.gson.Gson
 import com.uniandes.miso.vinyls.R
 import com.uniandes.miso.vinyls.models.*
 import com.uniandes.miso.vinyls.utils.MainAppBar
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun AlbumDetailScreen(
@@ -87,11 +88,11 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
                         .padding(8.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                    val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-                    val dateTime: LocalDateTime = LocalDateTime.parse(albumDetail.releaseDate, inputFormatter)
-                    val formattedDate: String = dateTime.format(outputFormatter)
+                    val dateTime: Date = inputFormat.parse(albumDetail.releaseDate)
+                    val formattedDate: String = outputFormat.format(dateTime)
                     Text(formattedDate)
                 }
             }
@@ -114,7 +115,7 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
 
             )
 
-            albumPerformers(albumDetail = albumDetail)
+            AlbumPerformers(albumDetail = albumDetail)
 
             Text(
                 text = "Comentarios",
@@ -125,24 +126,24 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
                     .padding(vertical = 8.dp)
             )
 
-            Comments(albumDetail.comments)
+            AlbumComments(albumDetail.comments)
 
         }
     }
 }
 
 @Composable
-fun albumComments(comments: List<Comment>) {
+fun AlbumComments(comments: List<Comment>) {
     LazyColumn(
     ) {
         items(comments, itemContent = {
-            CommentItem(comment = it)
+            AlbumCommentItem(comment = it)
         })
     }
 }
 
 @Composable
-fun albumCommentItem(comment: Comment) {
+fun AlbumCommentItem(comment: Comment) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -167,17 +168,16 @@ fun albumCommentItem(comment: Comment) {
             }
         }
     }
-
 }
 
 @Composable
-fun albumPerformers(albumDetail: Album) {
+fun AlbumPerformers(albumDetail: Album) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(dimensionResource(R.dimen.cell_min_width)),
         contentPadding = PaddingValues(dimensionResource(R.dimen.padding_xsmall)),
     ) {
         items(albumDetail.performers) {
-            performerItem(
+            PerformerItem(
                 it
             )
         }
@@ -185,7 +185,7 @@ fun albumPerformers(albumDetail: Album) {
 }
 
 @Composable
-fun performerItem(
+fun PerformerItem(
     albumPerformer: Performer
 ) {
     Card(
@@ -193,12 +193,12 @@ fun performerItem(
             .height(150.dp),
         elevation = 10.dp
     ) {
-        albumPerformerItem(albumPerformer)
+        AlbumPerformerItem(albumPerformer)
     }
 }
 
 @Composable
-fun albumPerformerItem(performer: Performer) {
+fun AlbumPerformerItem(performer: Performer) {
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(LocalContext.current).data(data = performer.image)
             .apply(block = fun ImageRequest.Builder.() {

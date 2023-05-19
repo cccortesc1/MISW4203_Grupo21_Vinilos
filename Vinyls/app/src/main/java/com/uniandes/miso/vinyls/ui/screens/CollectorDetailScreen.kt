@@ -68,7 +68,7 @@ fun CollectorDetail(modifier: Modifier, collectorDetail: Collector) {
             Text(
                 text = collectorDetail.name,
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5
+                style = typography.h5
             )
 
             TextButton(onClick = { }) {
@@ -102,7 +102,7 @@ fun CollectorDetail(modifier: Modifier, collectorDetail: Collector) {
             Text(
                 text = "Artistas Favoritos",
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5,
+                style = typography.h5,
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(vertical = 8.dp)
@@ -114,7 +114,7 @@ fun CollectorDetail(modifier: Modifier, collectorDetail: Collector) {
             Text(
                 text = "Comentarios",
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5,
+                style = typography.h5,
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(vertical = 8.dp)
@@ -128,8 +128,7 @@ fun CollectorDetail(modifier: Modifier, collectorDetail: Collector) {
 
 @Composable
 fun Comments(comments: List<Comment>) {
-    LazyColumn(
-    ) {
+    LazyColumn {
         items(comments, itemContent = {
             CommentItem(comment = it)
         })

@@ -1,6 +1,6 @@
 buildscript {
         ext {
-            compose_ui_version = '1.4.2'
+            compose_ui_version = '1.4.3'
             accompanist_version = '0.22.0-rc'
             coil_version = '2.2.0'
             navigation_version = '2.5.3'
