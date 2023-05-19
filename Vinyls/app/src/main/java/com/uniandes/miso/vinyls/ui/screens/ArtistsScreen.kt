@@ -84,7 +84,7 @@ import com.uniandes.miso.vinyls.viewmodels.ArtistViewModel
         Card(
             modifier = Modifier
                 .clickable {
-                    navController.navigate("listado/artistas/${artistsItem}")
+                    navController.navigate("listado/artists/${artistsItem}")
                 }
                 .padding(8.dp)
                 .height(210.dp),
