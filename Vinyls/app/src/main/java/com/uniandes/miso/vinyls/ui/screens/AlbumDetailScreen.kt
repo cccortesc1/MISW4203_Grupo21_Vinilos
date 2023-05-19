@@ -27,8 +27,9 @@ import com.google.gson.Gson
 import com.uniandes.miso.vinyls.R
 import com.uniandes.miso.vinyls.models.*
 import com.uniandes.miso.vinyls.utils.MainAppBar
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun AlbumDetailScreen(
@@ -87,11 +88,11 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
                         .padding(8.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                    val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-                    val dateTime: LocalDateTime = LocalDateTime.parse(albumDetail.releaseDate, inputFormatter)
-                    val formattedDate: String = dateTime.format(outputFormatter)
+                    val dateTime: Date = inputFormat.parse(albumDetail.releaseDate)
+                    val formattedDate: String = outputFormat.format(dateTime)
                     Text(formattedDate)
                 }
             }
