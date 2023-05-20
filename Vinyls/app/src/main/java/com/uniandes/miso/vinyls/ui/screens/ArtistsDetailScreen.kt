@@ -7,16 +7,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -66,77 +64,106 @@ fun ArtistDetail(modifier: Modifier, artistDetail: Artist) {
                 size(200, 200)
             }).build()
     )
-    Card(
-        modifier = Modifier
-            .padding(16.dp),
-            //.fillMaxWidth()
-            //.fillMaxHeight()
-            //.verticalScroll(rememberScrollState()),
-        backgroundColor = Color.White,
-        elevation = 20.dp
+
+    LazyColumn (
+        modifier = modifier
+        .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        Column(
-            modifier = modifier
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-
-            ) {
-            Text(
-                text = artistDetail.name,
-                color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5
-            )
-
+        item {
             Box(
-                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .height(170.dp)
                     .fillMaxWidth()
                     .padding(4.dp)
-            ) {
-                Image(
-                    painter = painter,
-                    contentDescription = "Image of an artist ${artistDetail.name}",
-                    modifier = Modifier.size(170.dp),
-                    contentScale = ContentScale.Crop
-                )
-            }
-
-            TextButton(onClick = { }) {
-                Row(
+            ){
+                Card(
                     modifier = Modifier
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                    val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        .padding(16.dp),
+                    backgroundColor = Color.White,
+                    elevation = 20.dp
+                ){
+                    Column(
+                        modifier = modifier
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
 
-                    val dateTime: Date = inputFormat.parse(artistDetail.birthDate)
-                    val formattedDate: String = outputFormat.format(dateTime)
-                    Text(formattedDate)
+                        ) {
+                        Text(
+                            text = artistDetail.name,
+                            color = MaterialTheme.colors.primary,
+                            style = MaterialTheme.typography.h5
+                        )
+
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .height(170.dp)
+                                .fillMaxWidth()
+                                .padding(4.dp)
+                        ) {
+                            Image(
+                                painter = painter,
+                                contentDescription = "Image of an artist ${artistDetail.name}",
+                                modifier = Modifier.size(170.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        TextButton(onClick = { }) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                                val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+                                val dateTime: Date = inputFormat.parse(artistDetail.birthDate)
+                                val formattedDate: String = dateTime.let { outputFormat.format(it) }
+                                Text(formattedDate)
+                            }
+                        }
+
+                        TextButton(onClick = { }) {
+                            Row(
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(artistDetail.description)
+                            }
+                        }
+                    }
                 }
             }
+        }
 
-            TextButton(onClick = { }) {
-                Row(
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(artistDetail.description)
-                }
-            }
-
-            Text(
-                text = "Discografía",
-                color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5,
+        item{
+            Box(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(vertical = 8.dp)
-            )
+                    .height(250.dp)
+                    .fillMaxWidth()
+                    .padding(4.dp)
+            ){
+                Column(
+                    modifier = modifier
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                )
+                {
+                    Text(
+                        text = "Discografía",
+                        color = MaterialTheme.colors.primary,
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(vertical = 8.dp)
+                    )
 
-            ArtistAlbums(artistDetail = artistDetail)
+                    ArtistAlbums(artistDetail = artistDetail)
+                }
+            }
         }
     }
+
 }
 
 @Composable
