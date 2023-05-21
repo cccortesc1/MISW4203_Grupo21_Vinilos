@@ -72,7 +72,7 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
             Text(
                 text = albumDetail.name,
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5
+                style = typography.h5
             )
 
             Image(
@@ -108,7 +108,7 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
             Text(
                 text = "Performers",
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5,
+                style = typography.h5,
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(vertical = 8.dp)
@@ -120,7 +120,7 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
             Text(
                 text = "Comentarios",
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5,
+                style = typography.h5,
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(vertical = 8.dp)
@@ -134,8 +134,7 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
 
 @Composable
 fun AlbumComments(comments: List<Comment>) {
-    LazyColumn(
-    ) {
+    LazyColumn {
         items(comments, itemContent = {
             AlbumCommentItem(comment = it)
         })
