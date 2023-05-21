@@ -73,7 +73,12 @@ fun ButtonWithRectangleShape(
     Button(
         onClick = {
             if (listado) {
-                navController.navigate("listado/${name.lowercase()}")
+                if (name == "Albumes") {
+                    navController.navigate("listado/${name.lowercase()}/${userId}")
+                } else {
+                    navController.navigate("listado/${name.lowercase()}")
+                }
+
             } else {
                 navController.navigate("options/${userId}")
             }

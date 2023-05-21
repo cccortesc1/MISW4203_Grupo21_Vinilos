@@ -3,6 +3,7 @@ package com.uniandes.miso.vinyls.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -14,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.uniandes.miso.vinyls.viewmodels.AlbumViewModel
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -24,22 +27,52 @@ import coil.request.ImageRequest
 import com.uniandes.miso.vinyls.R
 import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.utils.MainAppBar
+import com.uniandes.miso.vinyls.utils.User
 
 
 @Composable
 fun AlbumsScreen(
     albumViewModel: AlbumViewModel = hiltViewModel(),
-    navController: NavHostController) {
+    navController: NavHostController,
+    userType: String
+) {
 
     val albumItems = albumViewModel.albums.observeAsState()
     Scaffold(
         topBar = { MainAppBar(navController, R.string.albums) }
     ) { padding ->
-        AlbumMediaList(
-            modifier = Modifier.padding(padding),
-            albumItems,
-            navController
-        )
+
+        LazyColumn {
+            item {
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    NewAlbumButton(
+                        userType = userType,
+                        navController = navController,
+                        name = "Crear Álbum"
+                    )
+                }
+
+            }
+
+            item {
+                Box(
+                    modifier = Modifier
+                        .height(550.dp)
+                        .fillMaxWidth()
+                ) {
+                    AlbumMediaList(
+                        modifier = Modifier.padding(padding),
+                        albumItems,
+                        navController,
+                        userType
+                    )
+
+                }
+
+            }
+        }
     }
 }
 
@@ -47,8 +80,10 @@ fun AlbumsScreen(
 fun AlbumMediaList(
     modifier: Modifier,
     albumItems: State<List<Album>?>,
-    navController: NavHostController
+    navController: NavHostController,
+    userType: String
 ) {
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(dimensionResource(R.dimen.cell_min_width)),
         contentPadding = PaddingValues(dimensionResource(R.dimen.padding_xsmall)),
@@ -58,7 +93,8 @@ fun AlbumMediaList(
             items(listAlbum) {
                 AlbumMediaListItem(
                     albumItem = it,
-                    navController
+                    navController,
+                    userType
                 )
             }
         }
@@ -68,12 +104,13 @@ fun AlbumMediaList(
 @Composable
 fun AlbumMediaListItem(
     albumItem: Album,
-    navController: NavHostController
+    navController: NavHostController,
+    userType: String
 ) {
     Card(
         modifier = Modifier
             .clickable {
-                navController.navigate("listado/albums/${albumItem}")
+                navController.navigate("listado/albums/${albumItem}/${userType}")
             }
             .padding(8.dp)
             .height(150.dp),
@@ -107,5 +144,28 @@ fun AlbumItem(albumItem: Album) {
             modifier = Modifier.size(200.dp),
             contentScale = ContentScale.Crop
         )
+    }
+}
+
+@Composable
+fun NewAlbumButton(
+    name: String,
+    userType: String,
+    navController: NavHostController
+) {
+    if (User.valueOf(userType) == User.COLECCCIONISTA) {
+        Button(
+            onClick = {
+                navController.navigate("listado/albumes/nuevo-album")
+            },
+            shape = RectangleShape,
+            modifier = Modifier.width(width = 300.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.Black,
+                contentColor = Color.White
+            )
+        ) {
+            Text(text = name)
+        }
     }
 }
