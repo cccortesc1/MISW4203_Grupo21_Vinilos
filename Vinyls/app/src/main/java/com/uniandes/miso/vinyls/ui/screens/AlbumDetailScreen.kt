@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -27,6 +28,7 @@ import com.google.gson.Gson
 import com.uniandes.miso.vinyls.R
 import com.uniandes.miso.vinyls.models.*
 import com.uniandes.miso.vinyls.utils.MainAppBar
+import com.uniandes.miso.vinyls.utils.User
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -34,20 +36,23 @@ import java.util.Locale
 @Composable
 fun AlbumDetailScreen(
     navController: NavHostController,
-    albumDetail: Album
+    albumDetail: Album,
+    userType: String
 ) {
     Scaffold(
         topBar = { MainAppBar(navController, R.string.albums) }
     ) { padding ->
         AlbumDetail(
             modifier = Modifier.padding(padding),
-            albumDetail
+            albumDetail,
+            userType,
+            navController
         )
     }
 }
 
 @Composable
-fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
+fun AlbumDetail(modifier: Modifier, albumDetail: Album, userType: String, navController: NavHostController) {
     Log.d("DebugRecomposition", Gson().toJson(albumDetail))
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(LocalContext.current).data(data = albumDetail.cover)
@@ -91,7 +96,7 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
                     val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                     val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
-                    val dateTime: Date = inputFormat.parse(albumDetail.releaseDate)
+                    val dateTime: Date = inputFormat.parse(albumDetail.releaseDate) as Date
                     val formattedDate: String = outputFormat.format(dateTime)
                     Text(formattedDate)
                 }
@@ -102,6 +107,33 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(albumDetail.description)
+                }
+            }
+
+            Text(
+                text = "Tracks",
+                color = MaterialTheme.colors.primary,
+                style = typography.h5,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(vertical = 8.dp)
+            )
+
+            AlbumTracks(albumDetail = albumDetail)
+
+            if (User.valueOf(userType) == User.COLECCCIONISTA) {
+                Button(
+                    onClick = {
+                        navController.navigate("listado/albumes/asociar-track")
+                    },
+                    shape = RectangleShape,
+                    modifier = Modifier.width(width = 300.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Black,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = "Asociar Track")
                 }
             }
 
@@ -170,6 +202,20 @@ fun AlbumCommentItem(comment: Comment) {
 }
 
 @Composable
+fun AlbumTracks(albumDetail: Album) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(dimensionResource(R.dimen.cell_min_width)),
+        contentPadding = PaddingValues(dimensionResource(R.dimen.padding_xsmall)),
+    ) {
+        items(albumDetail.tracks) {
+            TrackItem(
+                it
+            )
+        }
+    }
+}
+
+@Composable
 fun AlbumPerformers(albumDetail: Album) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(dimensionResource(R.dimen.cell_min_width)),
@@ -184,6 +230,19 @@ fun AlbumPerformers(albumDetail: Album) {
 }
 
 @Composable
+fun TrackItem(
+    albumTrack: Track
+) {
+    Card(
+        modifier = Modifier
+            .height(150.dp),
+        elevation = 10.dp
+    ) {
+        AlbumTrackItem(albumTrack)
+    }
+}
+
+@Composable
 fun PerformerItem(
     albumPerformer: Performer
 ) {
@@ -193,6 +252,32 @@ fun PerformerItem(
         elevation = 10.dp
     ) {
         AlbumPerformerItem(albumPerformer)
+    }
+}
+
+@Composable
+fun AlbumTrackItem(track: Track) {
+
+    Column(
+        modifier = Modifier
+            .height(210.dp)
+            .fillMaxWidth()
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .height(160.dp)
+                .fillMaxWidth()
+                .padding(4.dp)
+        ) {
+            Text(
+                text = track.name,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(4.dp),
+                maxLines = 1
+            )
+        }
     }
 }
 
