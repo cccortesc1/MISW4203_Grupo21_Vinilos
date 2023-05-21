@@ -1,9 +1,9 @@
 package com.uniandes.miso.vinyls.ui.screens
 
-import android.opengl.Visibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -34,18 +34,45 @@ import com.uniandes.miso.vinyls.utils.User
 fun AlbumsScreen(
     albumViewModel: AlbumViewModel = hiltViewModel(),
     navController: NavHostController,
-    userType: String) {
+    userType: String
+) {
 
     val albumItems = albumViewModel.albums.observeAsState()
     Scaffold(
         topBar = { MainAppBar(navController, R.string.albums) }
     ) { padding ->
-        NewAlbumButton(userType = userType, navController = navController, name = "Crear Álbum")
-        AlbumMediaList(
-            modifier = Modifier.padding(padding),
-            albumItems,
-            navController
-        )
+
+        LazyColumn {
+            item {
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    NewAlbumButton(
+                        userType = userType,
+                        navController = navController,
+                        name = "Crear Álbum"
+                    )
+                }
+
+            }
+
+
+            item {
+                Box(
+                    modifier = Modifier
+                        .height(550.dp)
+                        .fillMaxWidth()
+                ) {
+                    AlbumMediaList(
+                        modifier = Modifier.padding(padding),
+                        albumItems,
+                        navController
+                    )
+
+                }
+
+            }
+        }
     }
 }
 
@@ -55,6 +82,7 @@ fun AlbumMediaList(
     albumItems: State<List<Album>?>,
     navController: NavHostController
 ) {
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(dimensionResource(R.dimen.cell_min_width)),
         contentPadding = PaddingValues(dimensionResource(R.dimen.padding_xsmall)),
