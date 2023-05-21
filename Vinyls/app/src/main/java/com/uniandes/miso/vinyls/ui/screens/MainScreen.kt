@@ -9,13 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.uniandes.miso.vinyls.R
-import com.uniandes.miso.vinyls.utils.User
 
 @Composable
 fun MainScreen(navController: NavHostController) {
@@ -30,7 +30,8 @@ fun MainScreen(navController: NavHostController) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .padding(padding)
+                .testTag("mainScreen"),
             color = MaterialTheme.colors.background
         ) {
 
@@ -40,8 +41,8 @@ fun MainScreen(navController: NavHostController) {
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Thumb()
-                ButtonWithRectangleShape("Coleccionista", User.COLECCCIONISTA, navController, false)
-                ButtonWithRectangleShape("Invitado", User.INVITADO, navController, false)
+                ButtonWithRectangleShape("Coleccionista", "coleccionista", navController, false)
+                ButtonWithRectangleShape("Invitado", "invitado", navController, false)
             }
         }
     }
@@ -66,7 +67,7 @@ fun Thumb() {
 @Composable
 fun ButtonWithRectangleShape(
     name: String,
-    userId: User,
+    userId: String,
     navController: NavHostController,
     listado: Boolean
 ) {
@@ -75,12 +76,13 @@ fun ButtonWithRectangleShape(
             if (listado) {
                 navController.navigate("listado/${name.lowercase()}")
             } else {
-                navController.navigate("options/${userId}")
+                navController.navigate("options/$userId")
             }
 
         },
         shape = RectangleShape,
-        modifier = Modifier.width(width = 300.dp),
+        modifier = Modifier.width(width = 300.dp)
+            .testTag(name),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.Black,
             contentColor = Color.White
