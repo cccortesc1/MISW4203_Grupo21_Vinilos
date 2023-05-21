@@ -77,8 +77,17 @@ fun MainView() {
             OptionsScreen(navController, id)
         }
 
-        composable("listado/albumes") {
-            AlbumsScreen(navController = navController)
+        composable(
+            route = "listado/albumes/{userId}",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("userId")
+            requireNotNull(id)
+            AlbumsScreen(navController = navController, userType = id)
         }
 
         composable("listado/artistas") {

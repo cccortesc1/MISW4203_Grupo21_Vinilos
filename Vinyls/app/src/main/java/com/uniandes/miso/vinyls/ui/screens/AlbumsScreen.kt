@@ -1,5 +1,6 @@
 package com.uniandes.miso.vinyls.ui.screens
 
+import android.opengl.Visibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.uniandes.miso.vinyls.viewmodels.AlbumViewModel
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -24,17 +27,20 @@ import coil.request.ImageRequest
 import com.uniandes.miso.vinyls.R
 import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.utils.MainAppBar
+import com.uniandes.miso.vinyls.utils.User
 
 
 @Composable
 fun AlbumsScreen(
     albumViewModel: AlbumViewModel = hiltViewModel(),
-    navController: NavHostController) {
+    navController: NavHostController,
+    userType: String) {
 
     val albumItems = albumViewModel.albums.observeAsState()
     Scaffold(
         topBar = { MainAppBar(navController, R.string.albums) }
     ) { padding ->
+        NewAlbumButton(userType = userType, navController = navController, name = "Crear Álbum")
         AlbumMediaList(
             modifier = Modifier.padding(padding),
             albumItems,
@@ -107,5 +113,28 @@ fun AlbumItem(albumItem: Album) {
             modifier = Modifier.size(200.dp),
             contentScale = ContentScale.Crop
         )
+    }
+}
+
+@Composable
+fun NewAlbumButton(
+    name: String,
+    userType: String,
+    navController: NavHostController
+) {
+    if (User.valueOf(userType) == User.COLECCCIONISTA) {
+        Button(
+            onClick = {
+                navController.navigate("listado/albumes/nuevo-album")
+            },
+            shape = RectangleShape,
+            modifier = Modifier.width(width = 300.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.Black,
+                contentColor = Color.White
+            )
+        ) {
+            Text(text = name)
+        }
     }
 }
