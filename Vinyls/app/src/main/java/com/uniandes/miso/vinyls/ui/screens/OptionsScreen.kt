@@ -10,10 +10,10 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.navigation.NavHostController
 import com.uniandes.miso.vinyls.R
 import com.uniandes.miso.vinyls.utils.MainAppBar
-import com.uniandes.miso.vinyls.utils.User
 
 @Composable
 fun OptionsScreen(navController: NavHostController, id: String) {
@@ -22,7 +22,8 @@ fun OptionsScreen(navController: NavHostController, id: String) {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding),
+                .padding(padding)
+                .testTag("optionsScreen"),
             color = MaterialTheme.colors.background
         ) {
             Column(
@@ -30,15 +31,15 @@ fun OptionsScreen(navController: NavHostController, id: String) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                if (User.valueOf(id) == User.COLECCCIONISTA) {
-                    ButtonWithRectangleShape("Albumes", User.valueOf(id), navController, true)
-                    ButtonWithRectangleShape("Artistas", User.valueOf(id), navController, true)
+                if (id == "coleccionista") {
+                    ButtonWithRectangleShape("Albumes", "coleccionista", navController, true)
+                    ButtonWithRectangleShape("Artistas", "coleccionista", navController, true)
                 } else {
-                    ButtonWithRectangleShape("Albumes", User.valueOf(id), navController, true)
-                    ButtonWithRectangleShape("Artistas", User.valueOf(id), navController, true)
+                    ButtonWithRectangleShape("Albumes", "invitado", navController, true)
+                    ButtonWithRectangleShape("Artistas", "invitado", navController, true)
                     ButtonWithRectangleShape(
                         "Coleccionistas",
-                        User.valueOf(id),
+                        "invitado",
                         navController,
                         true
                     )

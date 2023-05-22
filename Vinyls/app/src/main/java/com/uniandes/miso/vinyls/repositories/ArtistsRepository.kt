@@ -9,12 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ArtistsRepository(@ApplicationContext val application: Context) {
-    fun refreshData(callback: (List<Artist>) -> Unit, onError: (VolleyError) -> Unit) {
-        NetworkServiceAdapter.getInstance(application).getArtists(
-            {
-                callback(it)
-            },
-            onError
-        )
+    suspend fun refreshData(): List<Artist> {
+        return NetworkServiceAdapter.getInstance(application).getArtists();
     }
 }
