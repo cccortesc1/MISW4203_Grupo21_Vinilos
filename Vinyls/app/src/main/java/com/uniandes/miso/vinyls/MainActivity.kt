@@ -99,14 +99,17 @@ fun MainView() {
         }
 
         composable(
-            route="listado/albums/{albumItem}",
-            arguments = listOf(navArgument("albumItem"){
-                type = AlbumArgType()
-            })
-        ) { navBackStackEntry->
+            route="listado/albums/{albumItem}/{userType}",
+            arguments = listOf(
+                navArgument("albumItem"){ type = AlbumArgType() },
+                navArgument("userType"){ type = NavType.StringType },
+            )
+        ) {navBackStackEntry ->
             val albumDetail = navBackStackEntry.arguments?.getString("albumItem")?.let { Gson().fromJson(it, Album::class.java) }
+            val userType = navBackStackEntry.arguments?.getString("userType")
             requireNotNull(albumDetail)
-            AlbumDetailScreen(navController, albumDetail)
+            requireNotNull(userType)
+            AlbumDetailScreen(navController, albumDetail, userType)
         }
 
         composable(

@@ -56,7 +56,6 @@ fun AlbumsScreen(
 
             }
 
-
             item {
                 Box(
                     modifier = Modifier
@@ -66,7 +65,8 @@ fun AlbumsScreen(
                     AlbumMediaList(
                         modifier = Modifier.padding(padding),
                         albumItems,
-                        navController
+                        navController,
+                        userType
                     )
 
                 }
@@ -80,7 +80,8 @@ fun AlbumsScreen(
 fun AlbumMediaList(
     modifier: Modifier,
     albumItems: State<List<Album>?>,
-    navController: NavHostController
+    navController: NavHostController,
+    userType: String
 ) {
 
     LazyVerticalGrid(
@@ -92,7 +93,8 @@ fun AlbumMediaList(
             items(listAlbum) {
                 AlbumMediaListItem(
                     albumItem = it,
-                    navController
+                    navController,
+                    userType
                 )
             }
         }
@@ -102,12 +104,13 @@ fun AlbumMediaList(
 @Composable
 fun AlbumMediaListItem(
     albumItem: Album,
-    navController: NavHostController
+    navController: NavHostController,
+    userType: String
 ) {
     Card(
         modifier = Modifier
             .clickable {
-                navController.navigate("listado/albums/${albumItem}")
+                navController.navigate("listado/albums/${albumItem}/${userType}")
             }
             .padding(8.dp)
             .height(150.dp),
