@@ -79,8 +79,17 @@ fun MainView() {
             OptionsScreen(navController, id)
         }
 
-        composable("listado/albumes") {
-            AlbumsScreen(navController = navController)
+        composable(
+            route = "listado/albumes/{userId}",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("userId")
+            requireNotNull(id)
+            AlbumsScreen(navController = navController, userType = id)
         }
 
         composable("listado/artistas") {
@@ -92,14 +101,17 @@ fun MainView() {
         }
 
         composable(
-            route="listado/albums/{albumItem}",
-            arguments = listOf(navArgument("albumItem"){
-                type = AlbumArgType()
-            })
-        ) { navBackStackEntry->
+            route="listado/albums/{albumItem}/{userType}",
+            arguments = listOf(
+                navArgument("albumItem"){ type = AlbumArgType() },
+                navArgument("userType"){ type = NavType.StringType },
+            )
+        ) {navBackStackEntry ->
             val albumDetail = navBackStackEntry.arguments?.getString("albumItem")?.let { Gson().fromJson(it, Album::class.java) }
+            val userType = navBackStackEntry.arguments?.getString("userType")
             requireNotNull(albumDetail)
-            AlbumDetailScreen(navController, albumDetail)
+            requireNotNull(userType)
+            AlbumDetailScreen(navController, albumDetail, userType)
         }
 
         composable(
