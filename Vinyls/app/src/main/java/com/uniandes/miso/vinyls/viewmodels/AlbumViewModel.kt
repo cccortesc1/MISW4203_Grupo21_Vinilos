@@ -15,9 +15,13 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
     ViewModel() {
 
     private val _albums = MutableLiveData<List<Album>>()
+    private val _album = MutableLiveData<Album>()
 
     val albums: LiveData<List<Album>>
         get() = _albums
+
+    val album: LiveData<Album>
+        get() = _album
 
     private var _eventNetworkError = MutableLiveData(false)
 
