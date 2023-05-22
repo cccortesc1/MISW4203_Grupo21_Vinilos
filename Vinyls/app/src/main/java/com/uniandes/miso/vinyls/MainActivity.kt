@@ -19,10 +19,12 @@ import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.Gson
+import com.uniandes.miso.vinyls.models.Artist
 import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.models.Collector
 import com.uniandes.miso.vinyls.ui.screens.*
 import com.uniandes.miso.vinyls.ui.theme.VinylsTheme
+import com.uniandes.miso.vinyls.utils.ArtistArgType
 import com.uniandes.miso.vinyls.utils.AlbumArgType
 import com.uniandes.miso.vinyls.utils.CollectorArgType
 import dagger.hilt.android.AndroidEntryPoint
@@ -98,6 +100,17 @@ fun MainView() {
             val albumDetail = navBackStackEntry.arguments?.getString("albumItem")?.let { Gson().fromJson(it, Album::class.java) }
             requireNotNull(albumDetail)
             AlbumDetailScreen(navController, albumDetail)
+        }
+
+        composable(
+            route="listado/artists/{artistsItem}",
+            arguments = listOf(navArgument("artistsItem"){
+                type = ArtistArgType()
+            })
+        ) {navBackStackEntry->
+            val artistDetail = navBackStackEntry.arguments?.getString("artistsItem")?.let { Gson().fromJson(it, Artist::class.java) }
+            requireNotNull(artistDetail)
+            DetailArtistsScreen(navController, artistDetail)
         }
 
         composable(
