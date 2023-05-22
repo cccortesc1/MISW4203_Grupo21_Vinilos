@@ -126,6 +126,17 @@ fun MainView() {
         }
 
         composable(
+            route="listado/artists/{artistsItem}",
+            arguments = listOf(navArgument("artistsItem"){
+                type = ArtistArgType()
+            })
+        ) {navBackStackEntry->
+            val artistDetail = navBackStackEntry.arguments?.getString("artistsItem")?.let { Gson().fromJson(it, Artist::class.java) }
+            requireNotNull(artistDetail)
+            DetailArtistsScreen(navController, artistDetail)
+        }
+
+        composable(
             route="listado/collector/{collectorItem}",
             arguments = listOf(navArgument("collectorItem"){
                 type = CollectorArgType()
