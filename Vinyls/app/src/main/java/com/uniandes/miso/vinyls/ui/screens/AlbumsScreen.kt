@@ -148,7 +148,7 @@ fun NewAlbumButton(
     userType: String,
     navController: NavHostController
 ) {
-    if (User.valueOf(userType) == User.COLECCCIONISTA) {
+    if (userType == User.COLECCCIONISTA.idUser) {
 
 
             Button(

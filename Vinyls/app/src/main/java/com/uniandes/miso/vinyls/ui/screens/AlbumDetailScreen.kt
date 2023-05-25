@@ -121,7 +121,7 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album, userType: String, navCon
 
             AlbumTracks(albumDetail = albumDetail)
 
-            if (User.valueOf(userType) == User.COLECCCIONISTA) {
+            if (userType == User.COLECCCIONISTA.idUser) {
                 Button(
                     onClick = {
                         navController.navigate("listado/albumes/asociar-track")
