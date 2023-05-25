@@ -19,6 +19,7 @@ import com.uniandes.miso.vinyls.utils.MainAppBar
 
 @Composable
 fun AlbumCreateScreen(
+    navController: NavHostController
 ) {
     Scaffold(
         topBar = {
@@ -36,7 +37,7 @@ fun AlbumCreateScreen(
 fun AlbumCreate(modifier: Modifier) {
 
     Column{
-       // val focusManager = LocalFocusManager.current
+        // val focusManager = LocalFocusManager.current
 
         val name = remember {
             mutableStateOf(TextFieldValue())
@@ -151,4 +152,3 @@ fun AlbumCreate(modifier: Modifier) {
         Spacer(modifier = Modifier.height(15.dp))
     }
 }
-
