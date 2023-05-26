@@ -1,6 +1,9 @@
 package com.uniandes.miso.vinyls.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.*
 import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.repositories.AlbumsRepository
@@ -14,14 +17,22 @@ import javax.inject.Inject
 class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRepository) :
     ViewModel() {
 
+    val albumName = mutableStateOf(TextFieldValue())
+
+    val cover = mutableStateOf(TextFieldValue())
+
+    val description = mutableStateOf(TextFieldValue())
+
+    val genre = mutableStateOf(TextFieldValue())
+
+    val recordLabel = mutableStateOf(TextFieldValue())
+
+    val date =  mutableStateOf(String())
+
     private val _albums = MutableLiveData<List<Album>>()
-    private val _album = MutableLiveData<Album>()
 
     val albums: LiveData<List<Album>>
         get() = _albums
-
-    val album: LiveData<Album>
-        get() = _album
 
     private var _eventNetworkError = MutableLiveData(false)
 

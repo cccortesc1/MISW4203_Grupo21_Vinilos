@@ -114,6 +114,11 @@ fun MainView() {
             AlbumDetailScreen(navController, albumDetail, userType)
         }
 
+        composable("listado/albumes/album-detail/nuevo-album") {
+            AlbumCreateScreen(navController = navController)
+        }
+
+
         composable(
             route="listado/artists/{artistsItem}",
             arguments = listOf(navArgument("artistsItem"){

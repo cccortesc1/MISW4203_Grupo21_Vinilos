@@ -59,7 +59,7 @@ import com.uniandes.miso.vinyls.viewmodels.ArtistViewModel
             ) {
                 Image(
                     painter = painter,
-                    contentDescription = "Image of an artist ${artistItem.name}",
+                    contentDescription = "Imagen del artista ${artistItem.name}",
                     modifier = Modifier.size(160.dp),
                     contentScale = ContentScale.Crop
                 )
