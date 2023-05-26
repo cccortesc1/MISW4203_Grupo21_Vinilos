@@ -31,3 +31,8 @@ data class Track (
     val name: String,
     val duration: String
 )
+
+data class TrackAssociated (
+    val name: String,
+    val duration: String
+)
