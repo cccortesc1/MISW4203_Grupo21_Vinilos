@@ -6,14 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -61,13 +58,6 @@ fun AssociateTrack(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val trackName = remember {
-            mutableStateOf(TextFieldValue())
-        }
-        val duration = remember {
-            mutableStateOf(TextFieldValue())
-        }
-
         Spacer(modifier = Modifier.height(25.dp))
 
         OutlinedTextField(
@@ -78,8 +68,8 @@ fun AssociateTrack(
                 backgroundColor = Color.LightGray,
                 placeholderColor = Color.Black
             ),
-            value = trackName.value,
-            onValueChange = { trackName.value = it },
+            value = albumViewModel.trackName.value,
+            onValueChange = { albumViewModel.trackName.value = it },
             label = { Text(text = "Nombre") },
             placeholder = { Text(text = "track nombre") },
             maxLines = 1
@@ -95,8 +85,8 @@ fun AssociateTrack(
                 backgroundColor = Color.LightGray,
                 placeholderColor = Color.Black
             ),
-            value = duration.value,
-            onValueChange = { duration.value = it },
+            value = albumViewModel.duration.value,
+            onValueChange = { albumViewModel.duration.value = it },
             label = { Text(text = "Duración") },
             placeholder = { Text(text = "5:05") },
             maxLines = 1
@@ -108,8 +98,8 @@ fun AssociateTrack(
             onClick = {
                 albumViewModel.associateTrack(
                     TrackAssociated(
-                        trackName.value.text,
-                        duration.value.text
+                        albumViewModel.trackName.value.text,
+                        albumViewModel.duration.value.text
                     ), idAlbum
                 )
             },

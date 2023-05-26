@@ -1,6 +1,8 @@
 package com.uniandes.miso.vinyls.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.*
 import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.models.TrackAssociated
@@ -40,6 +42,9 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
 
     val loadingTrack: LiveData<Boolean>
         get() = _loadingTrack
+
+    var trackName = mutableStateOf(TextFieldValue())
+    var duration = mutableStateOf(TextFieldValue())
 
     init {
         refreshDataFromNetwork()
