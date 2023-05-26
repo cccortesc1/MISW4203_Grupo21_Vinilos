@@ -1,100 +1,127 @@
 package com.uniandes.miso.vinyls.ui.screens
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.uniandes.miso.vinyls.R
+import com.uniandes.miso.vinyls.models.TrackAssociated
+import com.uniandes.miso.vinyls.utils.MainAppBar
+import com.uniandes.miso.vinyls.viewmodels.AlbumViewModel
 
 @Composable
 fun AssociateTrackScreen(
-    idAlbum: String
+    id: Int,
+    navController: NavHostController,
+    albumViewModel: AlbumViewModel = hiltViewModel(),
+    context: Context = LocalContext.current
 ) {
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.associate_track)) })
-        }
+        topBar = { MainAppBar(navController, R.string.associate_track) }
     ) { padding ->
         AssociateTrack(
             modifier = Modifier.padding(padding),
-            idAlbum
+            id,
+            albumViewModel,
+            context
         )
     }
 }
 
 @Composable
-fun AssociateTrack(modifier: Modifier, idAlbum: String) {
+fun AssociateTrack(
+    modifier: Modifier,
+    idAlbum: Int,
+    albumViewModel: AlbumViewModel,
+    context: Context
+) {
+
+    val isTrackAdded = albumViewModel.associateTrack.observeAsState()
+    val isLoadingTrack = albumViewModel.loadingTrack.observeAsState()
+
+    if (isTrackAdded.value == true) {
+        Toast.makeText(context, "Track agregada al album", Toast.LENGTH_LONG).show()
+    }
+
     Column(
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val trackName = remember {
-            mutableStateOf(TextFieldValue())
-        }
-        val duration = remember {
-            mutableStateOf(TextFieldValue())
-        }
+        Spacer(modifier = Modifier.height(25.dp))
 
-        Text(
-            text = "Asociar Track",
-            style = TextStyle(fontSize = 18.sp, color = Color.Black)
+        OutlinedTextField(
+            modifier = modifier
+                .padding(15.dp, 0.dp, 15.dp, 0.dp)
+                .fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.LightGray,
+                placeholderColor = Color.Black
+            ),
+            value = albumViewModel.trackName.value,
+            onValueChange = { albumViewModel.trackName.value = it },
+            label = { Text(text = "Nombre") },
+            placeholder = { Text(text = "track nombre") },
+            maxLines = 1
         )
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        TextField(
-            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.LightGray, placeholderColor = Color.Black),
-            label = { Text(text = "Nombre", style = TextStyle(fontSize = 18.sp, color = Color.Black)) },
-            value = trackName.value,
-            onValueChange = { trackName.value = it },
-            placeholder = { Text(text = "Nombre") },
-
-            )
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-
-        TextField(
-            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.LightGray, placeholderColor = Color.Black),
-            label = { Text(text = "Duración", style = TextStyle(fontSize = 18.sp, color = Color.Black)) },
-            value = duration.value,
-            onValueChange = { duration.value = it },
-            placeholder = { Text(text = "Duración") },
-
-            )
+        OutlinedTextField(
+            modifier = modifier
+                .padding(15.dp, 0.dp, 15.dp, 0.dp)
+                .fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.LightGray,
+                placeholderColor = Color.Black
+            ),
+            value = albumViewModel.duration.value,
+            onValueChange = { albumViewModel.duration.value = it },
+            label = { Text(text = "Duración") },
+            placeholder = { Text(text = "5:05") },
+            maxLines = 1
+        )
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
-            Button(
-                onClick = {},
-                shape = RectangleShape,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.Black,
-                    contentColor = Color.White
+        Button(
+            onClick = {
+                albumViewModel.associateTrack(
+                    TrackAssociated(
+                        albumViewModel.trackName.value.text,
+                        albumViewModel.duration.value.text
+                    ), idAlbum
                 )
+            },
+            shape = RectangleShape,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp, 0.dp, 15.dp, 0.dp)
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.Black,
+                contentColor = Color.White
+            )
 
-            ) {
-                Text(text = "Asociar")
-            }
+        ) {
+            Text(text = "Asociar")
         }
 
         Spacer(modifier = Modifier.height(15.dp))
+
+        if (isLoadingTrack.value == true) {
+            CircularProgressIndicator()
+        }
     }
 }
 

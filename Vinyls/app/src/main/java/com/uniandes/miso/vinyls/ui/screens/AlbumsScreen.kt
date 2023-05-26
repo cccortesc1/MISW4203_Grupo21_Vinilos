@@ -156,7 +156,7 @@ fun NewAlbumButton(
                     navController.navigate("listado/albumes/album-detail/nuevo-album")
                 },
                 shape = RectangleShape,
-                modifier = Modifier.fillMaxWidth().padding(25.dp, 0.dp, 25.dp, 0.dp),
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color.Black,
                     contentColor = Color.White
