@@ -124,7 +124,7 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album, userType: String, navCon
             if (userType == User.COLECCCIONISTA.idUser) {
                 Button(
                     onClick = {
-                        navController.navigate("listado/albumes/asociar-track/${albumDetail.albumId}")
+                        navController.navigate("listado/albumes/asociar-track/${albumDetail.id}")
                     },
                     shape = RectangleShape,
                     modifier = Modifier.width(width = 300.dp),

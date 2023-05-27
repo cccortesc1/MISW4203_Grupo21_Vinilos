@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.*
 import com.uniandes.miso.vinyls.models.Album
+import com.uniandes.miso.vinyls.models.NewAlbum
 import com.uniandes.miso.vinyls.models.TrackAssociated
 import com.uniandes.miso.vinyls.repositories.AlbumsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,18 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRepository) :
     ViewModel() {
-
-    val albumName = mutableStateOf(TextFieldValue())
-
-    val cover = mutableStateOf(TextFieldValue())
-
-    val description = mutableStateOf(TextFieldValue())
-
-    val genre = mutableStateOf(TextFieldValue())
-
-    val recordLabel = mutableStateOf(TextFieldValue())
-
-    val date =  mutableStateOf(String())
 
     private val _albums = MutableLiveData<List<Album>>()
 
@@ -51,6 +40,12 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
         get() = _associateTrack
 
 
+    private var _createAlbum = MutableLiveData(false)
+
+    val createAlbum: LiveData<Boolean>
+        get() = _createAlbum
+
+
     private var _loadingTrack = MutableLiveData(false)
 
     val loadingTrack: LiveData<Boolean>
@@ -58,6 +53,12 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
 
     var trackName = mutableStateOf(TextFieldValue())
     var duration = mutableStateOf(TextFieldValue())
+    val albumName = mutableStateOf(TextFieldValue())
+    val cover = mutableStateOf(TextFieldValue())
+    val description = mutableStateOf(TextFieldValue())
+    val genre = mutableStateOf(TextFieldValue())
+    val recordLabel = mutableStateOf(TextFieldValue())
+    val date =  mutableStateOf(String())
 
     init {
         refreshDataFromNetwork()
@@ -98,6 +99,22 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
                 Log.d("Error", e.toString())
                 _associateTrack.postValue(false)
                 _loadingTrack.postValue(false)
+            }
+        }
+    }
+
+    fun createNewAlbum(album: NewAlbum) {
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    val response = albumsRepository.createNewAlbum(album)
+                    _createAlbum.postValue(true)
+                }
+
+            } catch (e: Exception) {
+                Log.d("Error", e.toString())
+                Log.d("ErrorM", e.message.toString())
+                _createAlbum.postValue(false)
             }
         }
     }
