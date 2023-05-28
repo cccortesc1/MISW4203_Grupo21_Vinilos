@@ -56,8 +56,8 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
     val albumName = mutableStateOf(TextFieldValue())
     val cover = mutableStateOf(TextFieldValue())
     val description = mutableStateOf(TextFieldValue())
-    val genre = mutableStateOf(TextFieldValue())
-    val recordLabel = mutableStateOf(TextFieldValue())
+    val genre = mutableStateOf(String())
+    val recordLabel = mutableStateOf(String())
     val date =  mutableStateOf(String())
 
     init {

@@ -12,8 +12,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,15 +55,25 @@ fun AlbumCreateScreen(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AlbumCreate(modifier: Modifier, albumViewModel: AlbumViewModel, context: Context) {
 
     val isCreatedAlbum = albumViewModel.createAlbum.observeAsState()
-    //val isLoadingTrack = albumViewModel.loadingTrack.observeAsState()
 
     if (isCreatedAlbum.value == true) {
         Toast.makeText(context, "Nuevo album generado", Toast.LENGTH_LONG).show()
     }
+
+    val optionsGenre = listOf("Salsa", "Rock", "Folk", "Classical")
+    val optionsLabel = listOf("Sony Music", "EMI", "Discos Fuentes", "Elektra", "Fania Records")
+
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(optionsGenre[0]) }
+
+    var expandedLabel by remember { mutableStateOf(false) }
+    var selectedLabelOptionText by remember { mutableStateOf(optionsLabel[0]) }
+
 
     Column (
         modifier.verticalScroll(rememberScrollState()),
@@ -149,6 +162,12 @@ fun AlbumCreate(modifier: Modifier, albumViewModel: AlbumViewModel, context: Con
 
             Spacer(modifier = Modifier.height(15.dp))
 
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = {
+                    expanded = !expanded
+                }
+            ) {
             OutlinedTextField(
                 modifier = modifier
                     .padding(15.dp, 0.dp, 15.dp, 0.dp)
@@ -158,6 +177,7 @@ fun AlbumCreate(modifier: Modifier, albumViewModel: AlbumViewModel, context: Con
                     placeholderColor = Color.DarkGray,
                     textColor = Color.Black
                 ),
+                readOnly = true,
                 label = {
                     Text(
                         text = "Género",
@@ -169,9 +189,34 @@ fun AlbumCreate(modifier: Modifier, albumViewModel: AlbumViewModel, context: Con
                 onValueChange = { albumViewModel.genre.value = it },
                 placeholder = { Text(text = "Género") },
             )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
+                    }
+                ) {
+                    optionsGenre.forEach { selectionOption ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedOptionText = selectionOption
+                                albumViewModel.genre.value = selectedOptionText
+                                expanded = false
+                            }
+                        ){
+                            Text(text = selectionOption)
+                        }
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(15.dp))
 
+            ExposedDropdownMenuBox(
+                expanded = expandedLabel,
+                onExpandedChange = {
+                    expandedLabel = !expandedLabel
+                }
+            ) {
             OutlinedTextField(
                 modifier = modifier
                     .padding(15.dp, 0.dp, 15.dp, 0.dp)
@@ -181,6 +226,7 @@ fun AlbumCreate(modifier: Modifier, albumViewModel: AlbumViewModel, context: Con
                     placeholderColor = Color.DarkGray,
                     textColor = Color.Black
                 ),
+                readOnly = true,
                 label = {
                     Text(
                         text = "Sello Discográfico",
@@ -192,22 +238,43 @@ fun AlbumCreate(modifier: Modifier, albumViewModel: AlbumViewModel, context: Con
                 onValueChange = { albumViewModel.recordLabel.value = it },
                 placeholder = { Text(text = "Sello Discográfico") },
             )
+                ExposedDropdownMenu(
+                    expanded = expandedLabel,
+                    onDismissRequest = {
+                        expandedLabel = false
+                    }
+                ) {
+                    optionsLabel.forEach { selectionOptionLabel ->
+                        DropdownMenuItem(
+                            onClick = {
+                                selectedLabelOptionText = selectionOptionLabel
+                                albumViewModel.recordLabel.value = selectedLabelOptionText
+                                expandedLabel = false
+                            }
+                        ){
+                            Text(text = selectionOptionLabel)
+                        }
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(15.dp))
 
         Box(modifier = Modifier.padding(15.dp, 0.dp, 15.dp, 0.dp)) {
             Button(
                 onClick = {
-                    albumViewModel.createNewAlbum(
-                        NewAlbum(
-                            name = albumViewModel.albumName.value.text,
-                            cover = albumViewModel.cover.value.text,
-                            description = albumViewModel.description.value.text,
-                            genre = albumViewModel.genre.value.text,
-                            recordLabel = albumViewModel.recordLabel.value.text,
-                            releaseDate = albumViewModel.date.value
+                    if(validateNewAlbumInfo(context, albumViewModel)) {
+                        albumViewModel.createNewAlbum(
+                            NewAlbum(
+                                name = albumViewModel.albumName.value.text,
+                                cover = albumViewModel.cover.value.text,
+                                description = albumViewModel.description.value.text,
+                                genre = albumViewModel.genre.value,
+                                recordLabel = albumViewModel.recordLabel.value,
+                                releaseDate = albumViewModel.date.value
+                            )
                         )
-                    )
+                    }
                 },
                 shape = RectangleShape,
                 modifier = Modifier
@@ -226,6 +293,48 @@ fun AlbumCreate(modifier: Modifier, albumViewModel: AlbumViewModel, context: Con
     }
 }
 
+fun validateNewAlbumInfo(context: Context, albumViewModel: AlbumViewModel) : Boolean
+{
+    var estado: Boolean = true
+    val name: String = albumViewModel.albumName.value.text
+    val cover: String = albumViewModel.cover.value.text
+    val description: String = albumViewModel.description.value.text
+    val genre: String = albumViewModel.genre.value
+    val recordLabel: String = albumViewModel.recordLabel.value
+    val releaseDate: String = albumViewModel.date.value
+
+    if(name.isEmpty())
+    {
+        Toast.makeText(context, "Debe ingresar el nombre del album", Toast.LENGTH_LONG).show()
+        estado = false
+    }
+    else if(cover.isEmpty())
+    {
+        Toast.makeText(context, "Debe ingresar la url de la imagen del album", Toast.LENGTH_LONG).show()
+        estado = false
+    }
+    else if(releaseDate.isEmpty())
+    {
+        Toast.makeText(context, "Debe seleccionar la fecha de lanzamiento del album", Toast.LENGTH_LONG).show()
+        estado = false
+    }
+    else if(description.isEmpty())
+    {
+        Toast.makeText(context, "Debe ingresar la descripción del album de máximo 4 líneas", Toast.LENGTH_LONG).show()
+        estado = false
+    }else if(genre.isEmpty())
+    {
+        Toast.makeText(context, "Debe seleccionar el género del album", Toast.LENGTH_LONG).show()
+        estado = false
+    }
+    else if(recordLabel.isEmpty())
+    {
+        Toast.makeText(context, "Debe seleccionar el sello discográfico del album", Toast.LENGTH_LONG).show()
+        estado = false
+    }
+    return estado
+}
+
 @Composable
 fun ShowDatePicker(context: Context, modifier: Modifier, albumViewModel: AlbumViewModel)
 {
@@ -242,8 +351,8 @@ fun ShowDatePicker(context: Context, modifier: Modifier, albumViewModel: AlbumVi
 
     val datePickerDialog = DatePickerDialog(
         context,
-        {_: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            albumViewModel.date.value = convertDateString("$dayOfMonth-$month-$year")
+        {_: DatePicker, yearDate: Int, monthDate: Int, dayOfMonth: Int ->
+            albumViewModel.date.value = convertDateString("$dayOfMonth-$monthDate-$yearDate")
         }, year, month, day
     )
 
