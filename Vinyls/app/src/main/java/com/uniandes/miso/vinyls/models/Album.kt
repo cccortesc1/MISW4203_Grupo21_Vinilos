@@ -1,9 +1,13 @@
 package com.uniandes.miso.vinyls.models
 
 import android.net.Uri
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.Gson
 
+@Entity(tableName = "albums")
 data class Album (
+    @PrimaryKey(autoGenerate = true)
     val albumId: Int,
     val name: String,
     val cover: String,

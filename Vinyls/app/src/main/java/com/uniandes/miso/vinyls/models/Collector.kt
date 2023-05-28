@@ -1,9 +1,13 @@
 package com.uniandes.miso.vinyls.models
 
 import android.net.Uri
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.Gson
 
+@Entity(tableName = "collectors")
 data class Collector(
+    @PrimaryKey(autoGenerate = true)
     val collectorId: Int,
     val name: String,
     val telephone: String,

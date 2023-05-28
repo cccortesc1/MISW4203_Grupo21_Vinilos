@@ -1,6 +1,8 @@
 package com.uniandes.miso.vinyls.di
 
+import android.app.Application
 import android.content.Context
+import com.uniandes.miso.vinyls.database.dao.CollectorsDao
 import com.uniandes.miso.vinyls.repositories.ArtistsRepository
 import com.uniandes.miso.vinyls.repositories.AlbumsRepository
 import com.uniandes.miso.vinyls.repositories.CollectorsRepository
@@ -16,7 +18,8 @@ import dagger.hilt.components.SingletonComponent
 class ApplicationModule {
 
     @Provides
-    fun provideCollectorRepository(@ApplicationContext context: Context): CollectorsRepository = CollectorsRepository(context)
+    fun provideCollectorRepository(application: Application, collectorsDao: CollectorsDao): CollectorsRepository =
+        CollectorsRepository(application, collectorsDao = collectorsDao)
 
     @Provides
     fun provideArtistRepository(@ApplicationContext context: Context): ArtistsRepository = ArtistsRepository(context)
