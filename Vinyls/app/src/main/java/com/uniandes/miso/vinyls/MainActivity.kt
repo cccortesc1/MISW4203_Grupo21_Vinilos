@@ -118,6 +118,44 @@ fun MainView() {
             AlbumDetailScreen(navController, albumDetail, userType)
         }
 
+        composable("listado/albumes/album-detail/nuevo-album") {
+            AlbumCreateScreen(navController = navController)
+        }
+
+
+        composable(
+            route="listado/artists/{artistsItem}",
+            arguments = listOf(navArgument("artistsItem"){
+                type = ArtistArgType()
+            })
+        ) {navBackStackEntry->
+            val artistDetail = navBackStackEntry.arguments?.getString("artistsItem")?.let { Gson().fromJson(it, Artist::class.java) }
+            requireNotNull(artistDetail)
+            DetailArtistsScreen(navController, artistDetail)
+        }
+
+        composable(
+            route="listado/artists/{artistsItem}",
+            arguments = listOf(navArgument("artistsItem"){
+                type = ArtistArgType()
+            })
+        ) {navBackStackEntry->
+            val artistDetail = navBackStackEntry.arguments?.getString("artistsItem")?.let { Gson().fromJson(it, Artist::class.java) }
+            requireNotNull(artistDetail)
+            DetailArtistsScreen(navController, artistDetail)
+        }
+
+        composable(
+            route="listado/albumes/asociar-track/{albumId}",
+            arguments = listOf(navArgument("albumId"){
+                type = NavType.IntType
+            })
+        ) {navBackStackEntry->
+            val albumId = navBackStackEntry.arguments?.getInt("albumId")
+            requireNotNull(albumId)
+            AssociateTrackScreen(id = albumId, navController = navController)
+        }
+
         composable(
             route="listado/artists/{artistsItem}",
             arguments = listOf(navArgument("artistsItem"){

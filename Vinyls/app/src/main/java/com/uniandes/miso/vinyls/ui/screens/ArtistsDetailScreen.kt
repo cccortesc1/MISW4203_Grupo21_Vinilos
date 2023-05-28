@@ -103,7 +103,7 @@ fun ArtistDetail(modifier: Modifier, artistDetail: Artist) {
                         ) {
                             Image(
                                 painter = painter,
-                                contentDescription = "Image of an artist ${artistDetail.name}",
+                                contentDescription = "Imagen del artista ${artistDetail.name}",
                                 modifier = Modifier.size(170.dp),
                                 contentScale = ContentScale.Crop
                             )
@@ -117,7 +117,7 @@ fun ArtistDetail(modifier: Modifier, artistDetail: Artist) {
                             ) {
                                 val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                                 val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                                val dateTime: Date = inputFormat.parse(artistDetail.birthDate) as Date
+                                val dateTime: Date = inputFormat.parse(artistDetail.birthDate)
                                 val formattedDate: String = dateTime.let { outputFormat.format(it) }
                                 Text(formattedDate)
                             }
@@ -213,7 +213,7 @@ fun AlbumsItem(album: Album) {
         ) {
             Image(
                 painter = painter,
-                contentDescription = "Image of an album ${album.name}",
+                contentDescription = "Imagen del album ${album.name}",
                 modifier = Modifier.size(160.dp),
                 contentScale = ContentScale.Crop
             )

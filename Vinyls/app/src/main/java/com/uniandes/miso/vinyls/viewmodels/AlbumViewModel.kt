@@ -2,9 +2,11 @@ package com.uniandes.miso.vinyls.viewmodels
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.*
 import com.uniandes.miso.vinyls.models.Album
+import com.uniandes.miso.vinyls.models.NewAlbum
 import com.uniandes.miso.vinyls.models.TrackAssociated
 import com.uniandes.miso.vinyls.repositories.AlbumsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,6 +39,11 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
     val associateTrack: LiveData<Boolean>
         get() = _associateTrack
 
+    private var _createAlbum = MutableLiveData(false)
+
+    val createAlbum: LiveData<Boolean>
+        get() = _createAlbum
+
 
     private var _loadingTrack = MutableLiveData(false)
 
@@ -45,6 +52,12 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
 
     var trackName = mutableStateOf(TextFieldValue())
     var duration = mutableStateOf(TextFieldValue())
+    val albumName = mutableStateOf(TextFieldValue())
+    val cover = mutableStateOf(TextFieldValue())
+    val description = mutableStateOf(TextFieldValue())
+    val genre = mutableStateOf(String())
+    val recordLabel = mutableStateOf(String())
+    val date =  mutableStateOf(String())
 
     init {
         refreshDataFromNetwork()
@@ -89,4 +102,19 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
         }
     }
 
+    fun createNewAlbum(album: NewAlbum) {
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    val response = albumsRepository.createNewAlbum(album)
+                    _createAlbum.postValue(true)
+                }
+
+            } catch (e: Exception) {
+                Log.d("Error", e.toString())
+                Log.d("ErrorM", e.message.toString())
+                _createAlbum.postValue(false)
+            }
+        }
+    }
 }

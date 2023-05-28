@@ -2,6 +2,7 @@ package com.uniandes.miso.vinyls.repositories
 
 import android.content.Context
 import com.uniandes.miso.vinyls.models.Album
+import com.uniandes.miso.vinyls.models.NewAlbum
 import com.uniandes.miso.vinyls.models.Track
 import com.uniandes.miso.vinyls.models.TrackAssociated
 import com.uniandes.miso.vinyls.network.NetworkServiceAdapter
@@ -18,5 +19,9 @@ class AlbumsRepository(@ApplicationContext val application: Context) {
 
     suspend fun associateTrack(track: TrackAssociated, idAlbum: Int) : JSONObject {
         return NetworkServiceAdapter.getInstance(application).associateTrack(track, idAlbum)
+    }
+
+    suspend fun createNewAlbum(album: NewAlbum): JSONObject {
+        return NetworkServiceAdapter.getInstance(application).createNewAlbum(album)
     }
 }
