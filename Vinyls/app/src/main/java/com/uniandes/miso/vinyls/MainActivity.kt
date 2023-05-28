@@ -11,6 +11,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,12 +20,15 @@ import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.Gson
+import com.uniandes.miso.vinyls.models.Artist
 import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.models.Collector
 import com.uniandes.miso.vinyls.ui.screens.*
 import com.uniandes.miso.vinyls.ui.theme.VinylsTheme
+import com.uniandes.miso.vinyls.utils.ArtistArgType
 import com.uniandes.miso.vinyls.utils.AlbumArgType
 import com.uniandes.miso.vinyls.utils.CollectorArgType
+import com.uniandes.miso.vinyls.viewmodels.CollectorViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -77,8 +81,17 @@ fun MainView() {
             OptionsScreen(navController, id)
         }
 
-        composable("listado/albumes") {
-            AlbumsScreen(navController = navController)
+        composable(
+            route = "listado/albumes/{userId}",
+            arguments = listOf(
+                navArgument("userId") {
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("userId")
+            requireNotNull(id)
+            AlbumsScreen(navController = navController, userType = id)
         }
 
         composable("listado/artistas") {
@@ -86,18 +99,45 @@ fun MainView() {
         }
 
         composable("listado/coleccionistas") {
-            CollectorsScreen(navController = navController)
+            val viewModel = hiltViewModel<CollectorViewModel>()
+            val collectorList = viewModel.collectors
+            CollectorsScreen(navController = navController, collectorList)
         }
 
         composable(
-            route="listado/albums/{albumItem}",
-            arguments = listOf(navArgument("albumItem"){
-                type = AlbumArgType()
-            })
-        ) { navBackStackEntry->
+            route="listado/albums/{albumItem}/{userType}",
+            arguments = listOf(
+                navArgument("albumItem"){ type = AlbumArgType() },
+                navArgument("userType"){ type = NavType.StringType },
+            )
+        ) {navBackStackEntry ->
             val albumDetail = navBackStackEntry.arguments?.getString("albumItem")?.let { Gson().fromJson(it, Album::class.java) }
+            val userType = navBackStackEntry.arguments?.getString("userType")
             requireNotNull(albumDetail)
-            AlbumDetailScreen(navController, albumDetail)
+            requireNotNull(userType)
+            AlbumDetailScreen(navController, albumDetail, userType)
+        }
+
+        composable(
+            route="listado/artists/{artistsItem}",
+            arguments = listOf(navArgument("artistsItem"){
+                type = ArtistArgType()
+            })
+        ) {navBackStackEntry->
+            val artistDetail = navBackStackEntry.arguments?.getString("artistsItem")?.let { Gson().fromJson(it, Artist::class.java) }
+            requireNotNull(artistDetail)
+            DetailArtistsScreen(navController, artistDetail)
+        }
+
+        composable(
+            route="listado/albumes/asociar-track/{albumId}",
+            arguments = listOf(navArgument("albumId"){
+                type = NavType.IntType
+            })
+        ) {navBackStackEntry->
+            val albumId = navBackStackEntry.arguments?.getInt("albumId")
+            requireNotNull(albumId)
+            AssociateTrackScreen(id = albumId, navController = navController)
         }
 
         composable(
@@ -105,8 +145,9 @@ fun MainView() {
             arguments = listOf(navArgument("collectorItem"){
                 type = CollectorArgType()
             })
-        ) { navBackStackEntry->
-            val collectorDetail = navBackStackEntry.arguments?.getString("collectorItem")?.let { Gson().fromJson(it, Collector::class.java) }
+        ) { navBackStackEntry ->
+            val collectorDetail = navBackStackEntry.arguments?.getString("collectorItem")
+                ?.let { Gson().fromJson(it, Collector::class.java) }
             requireNotNull(collectorDetail)
             CollectorDetailScreen(navController, collectorDetail)
         }

@@ -1,6 +1,8 @@
 package com.uniandes.miso.vinyls.ui.screens
 
+import android.content.Context
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -25,17 +27,19 @@ import com.uniandes.miso.vinyls.utils.MainAppBar
 import com.uniandes.miso.vinyls.viewmodels.ArtistViewModel
 
 @Composable
-fun ArtistsScreen(
+ fun ArtistsScreen(
     artistViewModel: ArtistViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    context: Context = LocalContext.current
 ) {
+
     val artists = artistViewModel.artists.observeAsState()
 
     @Composable
     fun ArtistItem(artistItem: Artist) {
 
         val painter = rememberAsyncImagePainter(
-            ImageRequest.Builder(LocalContext.current).data(data = artistItem.image)
+            ImageRequest.Builder(context).data(data = artistItem.image)
                 .apply(block = fun ImageRequest.Builder.() {
                     size(200, 200)
                 }).build()
@@ -55,7 +59,7 @@ fun ArtistsScreen(
             ) {
                 Image(
                     painter = painter,
-                    contentDescription = "Imagen del artista ${artistItem.name}",
+                    contentDescription = "Image of an artist ${artistItem.name}",
                     modifier = Modifier.size(160.dp),
                     contentScale = ContentScale.Crop
                 )
@@ -79,6 +83,9 @@ fun ArtistsScreen(
     ) {
         Card(
             modifier = Modifier
+                .clickable {
+                    navController.navigate("listado/artists/${artistsItem}")
+                }
                 .padding(8.dp)
                 .height(210.dp),
             elevation = 10.dp

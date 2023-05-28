@@ -5,14 +5,11 @@ import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.gson.Gson
-import com.uniandes.miso.vinyls.models.Album
-import com.uniandes.miso.vinyls.models.Artist
-import com.uniandes.miso.vinyls.models.Collector
+import com.uniandes.miso.vinyls.models.*
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.coroutines.resume
@@ -59,37 +56,41 @@ class NetworkServiceAdapter constructor(context: Context) {
         )
     }
 
-    fun getArtists(
-        onComplete: (resp: List<Artist>) -> Unit,
-        onError: (error: VolleyError) -> Unit
-    ) {
+    suspend fun getArtists() = suspendCoroutine<List<Artist>> { cont ->
         requestQueue.add(
             getRequest("musicians",
                 { response ->
-                    Log.d("tagb", response)
                     val resp = JSONArray(response)
                     val list = mutableListOf<Artist>()
                     for (i in 0 until resp.length()) {
                         val item = resp.getJSONObject(i)
-                        list.add(
-                            i,
-                            Artist(
-                                artistId = item.getInt("id"),
-                                name = item.getString("name"),
-                                image = item.getString("image"),
-                                description = item.getString("description"),
-                                birthDate = item.getString("birthDate")
-                            )
-                        )
+                        val gson = Gson()
+                        val artist = gson.fromJson(item.toString(), Artist::class.java)
+                        list.add(artist)
                     }
-                    onComplete(list)
+                    cont.resume(list)
                 },
                 {
-                    onError(it)
-                    Log.d("", it.message.toString())
+                    cont.resumeWithException(it)
                 })
         )
     }
+
+    suspend fun associateTrack(track: TrackAssociated, idAlbum: Int) =
+        suspendCoroutine<JSONObject> { cont ->
+            val trackJsonInString = Gson().toJson(track)
+            val trackJSONObject = JSONObject(trackJsonInString)
+            requestQueue.add(
+                postRequest("albums/${idAlbum}/tracks", trackJSONObject, {
+                    val response = it
+                    cont.resume(response)
+                },
+                    {
+                        val error = it
+                        cont.resumeWithException(error)
+                    })
+            )
+        }
 
     private fun getRequest(
         path: String,

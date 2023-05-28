@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -42,7 +43,8 @@ fun CollectorDetailScreen(
         topBar = { MainAppBar(navController, R.string.collectors) }
     ) { padding ->
         CollectorDetail(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.padding(padding).
+            testTag("collectorDetailScreen"),
             collectorDetail
         )
     }
@@ -68,7 +70,7 @@ fun CollectorDetail(modifier: Modifier, collectorDetail: Collector) {
             Text(
                 text = collectorDetail.name,
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5
+                style = typography.h5
             )
 
             TextButton(onClick = { }) {
@@ -102,7 +104,7 @@ fun CollectorDetail(modifier: Modifier, collectorDetail: Collector) {
             Text(
                 text = "Artistas Favoritos",
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5,
+                style = typography.h5,
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(vertical = 8.dp)
@@ -114,7 +116,7 @@ fun CollectorDetail(modifier: Modifier, collectorDetail: Collector) {
             Text(
                 text = "Comentarios",
                 color = MaterialTheme.colors.primary,
-                style = MaterialTheme.typography.h5,
+                style = typography.h5,
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(vertical = 8.dp)
@@ -128,8 +130,7 @@ fun CollectorDetail(modifier: Modifier, collectorDetail: Collector) {
 
 @Composable
 fun Comments(comments: List<Comment>) {
-    LazyColumn(
-    ) {
+    LazyColumn {
         items(comments, itemContent = {
             CommentItem(comment = it)
         })
