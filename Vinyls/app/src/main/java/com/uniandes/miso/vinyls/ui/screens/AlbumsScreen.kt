@@ -44,16 +44,11 @@ fun AlbumsScreen(
 
         LazyColumn {
             item {
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
                     NewAlbumButton(
                         userType = userType,
                         navController = navController,
                         name = "Crear Álbum"
                     )
-                }
-
             }
 
             item {
@@ -153,19 +148,21 @@ fun NewAlbumButton(
     userType: String,
     navController: NavHostController
 ) {
-    if (User.valueOf(userType) == User.COLECCCIONISTA) {
-        Button(
-            onClick = {
-                navController.navigate("listado/albumes/nuevo-album")
-            },
-            shape = RectangleShape,
-            modifier = Modifier.width(width = 300.dp),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Black,
-                contentColor = Color.White
-            )
-        ) {
-            Text(text = name)
-        }
+    if (userType == User.COLECCCIONISTA.idUser) {
+
+
+            Button(
+                onClick = {
+                    navController.navigate("listado/albumes/nuevo-album")
+                },
+                shape = RectangleShape,
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.Black,
+                    contentColor = Color.White
+                )
+            ) {
+                Text(text = name)
+            }
     }
 }

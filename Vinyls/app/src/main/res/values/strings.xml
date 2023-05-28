@@ -3,4 +3,5 @@
     <string name="collectors">Coleccionistas</string>
     <string name="artists">Artistas</string>
     <string name="albums">Álbumes</string>
+    <string name="associate_track">Asociar Track</string>
 </resources>
