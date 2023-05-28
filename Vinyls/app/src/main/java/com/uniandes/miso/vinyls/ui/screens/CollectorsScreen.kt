@@ -11,9 +11,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavHostController
 import com.uniandes.miso.vinyls.R
 import com.uniandes.miso.vinyls.models.Collector
@@ -22,15 +24,16 @@ import com.uniandes.miso.vinyls.viewmodels.CollectorViewModel
 
 @Composable
 fun CollectorsScreen(
-    collectorViewModel: CollectorViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    collectorList: LiveData<List<Collector>>
 ) {
-    val collectorItems = collectorViewModel.collectors.observeAsState()
+    val collectorItems = collectorList.observeAsState()
     Scaffold(
         topBar = { MainAppBar(navController, R.string.collectors) }
     ) { padding ->
         MediaList(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.padding(padding)
+                .testTag("collectorList"),
             collectorItems,
             navController
         )
