@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -42,7 +43,8 @@ fun CollectorDetailScreen(
         topBar = { MainAppBar(navController, R.string.collectors) }
     ) { padding ->
         CollectorDetail(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.padding(padding).
+            testTag("collectorDetailScreen"),
             collectorDetail
         )
     }

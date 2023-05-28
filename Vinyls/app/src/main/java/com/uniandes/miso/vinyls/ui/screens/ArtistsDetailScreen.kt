@@ -117,7 +117,6 @@ fun ArtistDetail(modifier: Modifier, artistDetail: Artist) {
                             ) {
                                 val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                                 val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-
                                 val dateTime: Date = inputFormat.parse(artistDetail.birthDate) as Date
                                 val formattedDate: String = dateTime.let { outputFormat.format(it) }
                                 Text(formattedDate)
