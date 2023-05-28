@@ -12,12 +12,15 @@ import javax.inject.Singleton
 @Singleton
 class CollectorsRepository (val application: Application, private val collectorsDao: CollectorsDao){
     suspend fun refreshData(): List<Collector>{
-        var cached = collectorsDao.getCollectors()
+        var cached = collectorsDao.readCollectors()
         return if(cached.isEmpty()){
             val cm = application.baseContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             if( cm.activeNetworkInfo?.type != ConnectivityManager.TYPE_WIFI && cm.activeNetworkInfo?.type != ConnectivityManager.TYPE_MOBILE){
                 emptyList()
-            } else NetworkServiceAdapter.getInstance(application).getCollectors()
+            } else {
+                collectorsDao.insertCollectors(NetworkServiceAdapter.getInstance(application).getCollectors())
+                NetworkServiceAdapter.getInstance(application).getCollectors()
+            }
         } else cached
     }
 }

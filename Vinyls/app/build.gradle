@@ -68,7 +68,6 @@ dependencies {
     // Dagger Hilt
     implementation "com.google.dagger:hilt-android:$dagger_version"
     implementation 'androidx.navigation:navigation-testing:2.5.3'
-    implementation 'androidx.room:room-common:2.5.1'
     implementation 'androidx.room:room-ktx:2.5.1'
     kapt "com.google.dagger:hilt-android-compiler:$dagger_version"
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_version"
@@ -84,4 +83,10 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+
+    def room_version = "2.5.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // To use Kotlin annotation processing tool (kapt)
+    kapt "androidx.room:room-compiler:$room_version"
 }

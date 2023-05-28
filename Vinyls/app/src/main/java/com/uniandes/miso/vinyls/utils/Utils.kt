@@ -11,10 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.uniandes.miso.vinyls.models.Artist
-import com.uniandes.miso.vinyls.models.Album
-import com.uniandes.miso.vinyls.models.Collector
+import com.google.gson.reflect.TypeToken
+import com.uniandes.miso.vinyls.models.*
+import java.lang.reflect.Type
 
 enum class User(val idUser: String) {
     COLECCCIONISTA("coleccionista"),
@@ -70,4 +71,60 @@ abstract class JsonNavType<T> : NavType<T>(isNullableAllowed = false) {
     override fun put(bundle: Bundle, key: String, value: T) {
         bundle.putString(key, value.getJsonParse())
     }
+}
+
+interface JsonParser {
+    fun <T> fromJson(json: String, type: Type): T?
+    fun <T> toJson(obj: T, type: Type): String?
+}
+
+class CommentTypeConverter {
+
+    val gson = Gson()
+
+    @TypeConverter
+    fun collectorToString(collector: List<Comment>): String {
+        return gson.toJson(collector)
+    }
+
+    @TypeConverter
+    fun stringToCollector(collectorString: String): List<Comment> {
+        val objectType = object : TypeToken<List<Comment>>() {}.type
+        return gson.fromJson(collectorString , objectType)
+    }
+
+}
+
+class FavoritePerformersTypeConverter {
+
+    val gson = Gson()
+
+    @TypeConverter
+    fun favoritePerformersToString(favoritePerformers: List<FavoritePerformer>): String {
+        return gson.toJson(favoritePerformers)
+    }
+
+    @TypeConverter
+    fun stringToFavoritePerformers(favoritePerformersString: String): List<FavoritePerformer> {
+        val objectType = object : TypeToken<List<FavoritePerformer>>() {}.type
+        return gson.fromJson(favoritePerformersString , objectType)
+    }
+
+}
+
+class CollectorAlbumsTypeConverter {
+
+    val gson = Gson()
+
+    @TypeConverter
+    fun collectorAlbumsToString(collectorAlbums: List<CollectorAlbum>): String {
+        return gson.toJson(collectorAlbums)
+    }
+
+    @TypeConverter
+    fun stringToFavoritePerformers(collectorAlbumsString: String): List<CollectorAlbum> {
+        val objectType = object : TypeToken<List<CollectorAlbum>>() {}.type
+        return gson.fromJson(collectorAlbumsString , objectType)
+    }
+
 }

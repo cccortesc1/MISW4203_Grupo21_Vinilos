@@ -4,17 +4,21 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.uniandes.miso.vinyls.database.dao.AlbumsDao
 import com.uniandes.miso.vinyls.database.dao.ArtistsDao
 import com.uniandes.miso.vinyls.database.dao.CollectorsDao
 import com.uniandes.miso.vinyls.models.Album
 import com.uniandes.miso.vinyls.models.Artist
 import com.uniandes.miso.vinyls.models.Collector
+import com.uniandes.miso.vinyls.utils.*
 
-@Database(entities = [Album::class, Artist::class, Collector::class], version = 1, exportSchema = false)
+
+@Database(entities = [Collector::class], version = 1, exportSchema = false)
+@TypeConverters(*[FavoritePerformersTypeConverter::class,CommentTypeConverter::class, CollectorAlbumsTypeConverter::class] )
 abstract class VinylRoomDatabase : RoomDatabase() {
-    abstract fun albumsDao(): AlbumsDao
-    abstract fun artistsDao(): ArtistsDao
+    //abstract fun albumsDao(): AlbumsDao
+   // abstract fun artistsDao(): ArtistsDao
     abstract fun collectorsDao(): CollectorsDao
 
     companion object {
@@ -30,7 +34,9 @@ abstract class VinylRoomDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     VinylRoomDatabase::class.java,
-                    "vinyls_database"
+                    "vinyls_database",
+
+
                 ).build()
                 INSTANCE = instance
                 // return instance

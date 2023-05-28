@@ -8,13 +8,12 @@ import com.uniandes.miso.vinyls.models.Collector
 
 @Dao
 interface CollectorsDao {
-
-    @Query("SELECT * FROM collectors")
-    fun getCollectors():List<Collector>
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(collector: Collector)
-
-    @Query("DELETE FROM collectors")
+    @Query("DELETE FROM collectors_table")
     suspend fun deleteAll()
+
+ @Insert(onConflict = OnConflictStrategy.REPLACE)
+ suspend fun insertCollectors(collectors: List<Collector>)
+
+ @Query("SELECT * FROM collectors_table ORDER BY id ASC")
+ fun readCollectors(): List<Collector>
 }
