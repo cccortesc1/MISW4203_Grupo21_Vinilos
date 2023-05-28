@@ -157,23 +157,14 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album, userType: String, navCon
         item {
             Box(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(vertical = 8.dp)
-            )
-
-            AlbumTracks(albumDetail = albumDetail)
-
-            if (userType == User.COLECCCIONISTA.idUser) {
-                Button(
-                    onClick = {
-                        navController.navigate("listado/albumes/asociar-track/${albumDetail.id}")
-                    },
-                    shape = RectangleShape,
-                    modifier = Modifier.width(width = 300.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Black,
-                        contentColor = Color.White
-                    )
+                    .height(250.dp)
+                    .fillMaxWidth()
+                    .padding(4.dp)
+            ) {
+                Column(
+                    modifier = modifier
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
                         text = "Tracks",

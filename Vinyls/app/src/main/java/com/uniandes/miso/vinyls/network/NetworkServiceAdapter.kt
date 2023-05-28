@@ -92,22 +92,6 @@ class NetworkServiceAdapter constructor(context: Context) {
             )
         }
 
-    suspend fun createNewAlbum(album: NewAlbum) =
-        suspendCoroutine<JSONObject> { cont ->
-            val albumJsonInString = Gson().toJson(album)
-            val albumJSONObject = JSONObject(albumJsonInString)
-            requestQueue.add(
-                postRequest("albums", albumJSONObject, {
-                    val response = it
-                    cont.resume(response)
-                },
-                    {
-                        val error = it
-                        cont.resumeWithException(error)
-                    })
-            )
-        }
-
     private fun getRequest(
         path: String,
         responseListener: Response.Listener<String>,

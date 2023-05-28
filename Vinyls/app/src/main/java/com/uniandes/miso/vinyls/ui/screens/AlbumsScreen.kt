@@ -153,7 +153,7 @@ fun NewAlbumButton(
 
             Button(
                 onClick = {
-                    navController.navigate("listado/albumes/album-detail/nuevo-album")
+                    navController.navigate("listado/albumes/nuevo-album")
                 },
                 shape = RectangleShape,
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
