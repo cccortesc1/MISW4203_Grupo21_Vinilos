@@ -39,7 +39,6 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
     val associateTrack: LiveData<Boolean>
         get() = _associateTrack
 
-
     private var _createAlbum = MutableLiveData(false)
 
     val createAlbum: LiveData<Boolean>
@@ -118,5 +117,4 @@ class AlbumViewModel @Inject constructor(private val albumsRepository: AlbumsRep
             }
         }
     }
-
 }

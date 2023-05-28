@@ -1,6 +1,5 @@
 package com.uniandes.miso.vinyls.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.google.gson.Gson
 import com.uniandes.miso.vinyls.R
 import com.uniandes.miso.vinyls.models.*
 import com.uniandes.miso.vinyls.utils.MainAppBar
@@ -53,67 +51,111 @@ fun AlbumDetailScreen(
 
 @Composable
 fun AlbumDetail(modifier: Modifier, albumDetail: Album, userType: String, navController: NavHostController) {
-    Log.d("DebugRecomposition", Gson().toJson(albumDetail))
+
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(LocalContext.current).data(data = albumDetail.cover)
             .apply(block = fun ImageRequest.Builder.() {
                 size(200, 200)
             }).build()
     )
-    Card(
-        modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-            .fillMaxHeight(),
-        backgroundColor = Color.White,
-        elevation = 20.dp
-    ) {
-        Column(
-            modifier = modifier
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
 
+    LazyColumn (
+        modifier = modifier
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ){
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
             ) {
-            Text(
-                text = albumDetail.name,
-                color = MaterialTheme.colors.primary,
-                style = typography.h5
-            )
-
-            Image(
-                painter = painter,
-                contentDescription = "Imagen del álbum ${albumDetail.name}",
-                modifier = Modifier.size(160.dp),
-                contentScale = ContentScale.Crop
-            )
-
-            TextButton(onClick = { }) {
-                Row(
+                Card(
                     modifier = Modifier
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.Center
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    backgroundColor = Color.White,
+                    elevation = 20.dp
                 ) {
-                    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                    val outputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    Column(
+                        modifier = modifier
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
 
-                    val dateTime: Date = inputFormat.parse(albumDetail.releaseDate) as Date
-                    val formattedDate: String = outputFormat.format(dateTime)
-                    Text(formattedDate)
+                        ) {
+                        Text(
+                            text = albumDetail.name,
+                            color = MaterialTheme.colors.primary,
+                            style = typography.h5
+                        )
+
+                        Image(
+                            painter = painter,
+                            contentDescription = "Imagen del álbum ${albumDetail.name}",
+                            modifier = Modifier.size(160.dp),
+                            contentScale = ContentScale.Crop
+                        )
+
+                        TextButton(onClick = { }) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                val inputFormat =
+                                    SimpleDateFormat(
+                                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                                        Locale.getDefault()
+                                    )
+                                val outputFormat =
+                                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+                                val dateTime: Date =
+                                    inputFormat.parse(albumDetail.releaseDate) as Date
+                                val formattedDate: String = outputFormat.format(dateTime)
+                                Text(formattedDate)
+                            }
+                        }
+
+                        TextButton(onClick = { }) {
+                            Row(
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(albumDetail.description)
+                            }
+                        }
+                    }
                 }
             }
+        }
 
-            TextButton(onClick = { }) {
-                Row(
-                    horizontalArrangement = Arrangement.Center
+        item {
+            Box(
+            ) {
+                Column(
                 ) {
-                    Text(albumDetail.description)
+                    if (userType == User.COLECCCIONISTA.idUser) {
+                        Button(
+                            onClick = {
+                                navController.navigate("listado/albumes/asociar-track/${albumDetail.albumId}")
+                            },
+                            shape = RectangleShape,
+                            modifier = Modifier.width(width = 300.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color.Black,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(text = "Asociar Track")
+                        }
+                    }
                 }
             }
+        }
 
-            Text(
-                text = "Tracks",
-                color = MaterialTheme.colors.primary,
-                style = typography.h5,
+        item {
+            Box(
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(vertical = 8.dp)
@@ -133,36 +175,75 @@ fun AlbumDetail(modifier: Modifier, albumDetail: Album, userType: String, navCon
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = "Asociar Track")
+                    Text(
+                        text = "Tracks",
+                        color = MaterialTheme.colors.primary,
+                        style = typography.h5,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(vertical = 8.dp)
+                    )
+
+                    AlbumTracks(albumDetail = albumDetail)
                 }
             }
+        }
 
-            Text(
-                text = "Performers",
-                color = MaterialTheme.colors.primary,
-                style = typography.h5,
+        item {
+            Box(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(vertical = 8.dp)
+                    .height(250.dp)
+                    .fillMaxWidth()
+                    .padding(4.dp)
+            ) {
+                Column(
+                    modifier = modifier
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "Performers",
+                        color = MaterialTheme.colors.primary,
+                        style = typography.h5,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(vertical = 8.dp)
 
-            )
+                    )
 
-            AlbumPerformers(albumDetail = albumDetail)
+                    AlbumPerformers(albumDetail = albumDetail)
+                }
+            }
+        }
 
-            Text(
-                text = "Comentarios",
-                color = MaterialTheme.colors.primary,
-                style = typography.h5,
+        item {
+            Box(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(vertical = 8.dp)
-            )
+                    .height(250.dp)
+                    .fillMaxWidth()
+                    .padding(4.dp)
+            ) {
+                Column(
+                    modifier = modifier
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "Comentarios",
+                        color = MaterialTheme.colors.primary,
+                        style = typography.h5,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .padding(vertical = 8.dp)
+                    )
 
-            AlbumComments(albumDetail.comments)
-
+                    AlbumComments(albumDetail.comments)
+                }
+            }
         }
     }
 }
+
 
 @Composable
 fun AlbumComments(comments: List<Comment>) {
@@ -270,13 +351,14 @@ fun AlbumTrackItem(track: Track) {
                 .fillMaxWidth()
                 .padding(4.dp)
         ) {
-            Text(
-                text = track.name,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(4.dp),
-                maxLines = 1
-            )
+            Column {
+                Text(
+                    text = "Nombre: " + track.name
+                )
+                Text(
+                    text = "Duración: " + track.duration
+                )
+            }
         }
     }
 }
